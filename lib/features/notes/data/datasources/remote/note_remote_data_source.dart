@@ -1,0 +1,44 @@
+import 'package:fastnotes_bloc/core/constants/api_constants.dart';
+import 'package:fastnotes_bloc/core/errors/exceptions.dart';
+import 'package:fastnotes_bloc/core/models/paginated_response_model.dart';
+import 'package:fastnotes_bloc/core/network/api_client.dart';
+import 'package:fastnotes_bloc/features/notes/data/models/note_model.dart';
+
+// Uzak veri kaynağı için arayüz
+abstract class NoteRemoteDataSource {
+  Future<PaginatedResponseModel<NoteModel>?> getNotes(int page);
+}
+
+// Uzak veri kaynağı için implementasyon
+class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
+  // API Client'ı bu katmanda kullanıyoruz.
+  // DI Containertdan singleton nesne olarak verilecek.
+  final ApiClient _apiClient;
+
+  // Constructor
+  NoteRemoteDataSourceImpl(this._apiClient);
+
+  // GetNotes fonksiyonu, API'den notları çeker.
+  @override
+  Future<PaginatedResponseModel<NoteModel>?> getNotes(int page) async {
+    try {
+      // Get isteğini yapar.
+      var response = await _apiClient.get(
+        ApiConstants.notes,
+        // TODO: pageSize'ı kullanıcının tercihine göre ayarlayın
+        queryParameters: {'pageNumber': page, 'pageSize': 15},
+      );
+
+      // Eğer response null ise, null dönüyoruz.
+      if (response == null) return null;
+
+      // PaginatedResponseModel'a dönüştürüyoruz.
+      return PaginatedResponseModel.fromJson(
+        response,
+        (json) => NoteModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on ServerException catch (e) {
+      throw ServerException(message: e.message);
+    }
+  }
+}

@@ -9,11 +9,32 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # State Management
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
+  # Newtork
+  dio: ^5.8.0+1
+  # Local Storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  # Dependency Injection
+  get_it: ^8.0.3
+  go_router: ^16.0.0
+  # UI Components
+  flutter_svg: ^2.2.0
+  # Utils
+  intl: ^0.20.2
+  flutter_native_splash: ^2.4.6
+  # Splash Screen
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  # Code Generation
+  build_runner: ^2.6.0
+  json_serializable: ^6.10.0
 
 flutter:
   uses-material-design: true

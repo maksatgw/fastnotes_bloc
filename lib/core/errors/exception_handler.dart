@@ -4,7 +4,6 @@ import 'package:fastnotes_bloc/core/errors/exceptions.dart';
 // Hata yakalama ve işleme fonksiyonu
 // DioException'ı ServerException'a dönüştürüyor.
 // Bu sayede, hata işleme daha kolay hale getiriyoruz.
-// Bu sayede, hata işleme daha kolay hale getiriyoruz.
 
 Exception handleNetworkError(DioException e) {
   switch (e.type) {
@@ -19,4 +18,9 @@ Exception handleNetworkError(DioException e) {
     default:
       return ServerException(message: 'Beklenmeyen hata');
   }
+}
+
+// Storage tarafında yaşanan hataları cache exception'a dönüştürüyor.
+Exception handleCacheError(CacheException e) {
+  return CacheException(message: e.message);
 }

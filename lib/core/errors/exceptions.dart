@@ -8,3 +8,10 @@ class ServerException implements Exception {
 
   ServerException({required this.message, this.statusCode});
 }
+
+// Cache Hatası
+class CacheException implements Exception {
+  final String message;
+
+  CacheException({required this.message});
+}

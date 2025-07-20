@@ -1,18 +1,19 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:fastnotes_bloc/core/storage/storage_service.dart';
 
 part 'theme_state.dart';
 
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit() : super(ThemeState(themeMode: ThemeMode.light));
+  final StorageService _storageService;
 
-  void toggleTheme() {
-    emit(
-      ThemeState(
-        themeMode: state.themeMode == ThemeMode.light
-            ? ThemeMode.dark
-            : ThemeMode.light,
-      ),
-    );
+  // State'in ilk durumunu Storage'dan alıyoruz.
+  ThemeCubit(this._storageService)
+    : super(ThemeState(isDarkMode: _storageService.getBoolSync('isDarkMode')));
+
+  // Theme'i değiştirmek için fonksiyon
+  Future<void> toggleTheme() async {
+    final newIsDarkMode = !state.isDarkMode;
+    await _storageService.setBool('isDarkMode', newIsDarkMode);
+    emit(ThemeState(isDarkMode: newIsDarkMode));
   }
 }

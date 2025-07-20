@@ -22,6 +22,7 @@ dependencies:
   go_router: ^16.0.0
   # UI Components
   flutter_svg: ^2.2.0
+  lottie: ^3.3.1
   # Utils
   intl: ^0.20.2
   json_annotation: ^4.9.0
@@ -39,3 +40,21 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/lotties/
+    - assets/images/
+
+flutter_native_splash:
+  color: "#ffffff"  
+  color_dark: "#000000"  
+  # image: "assets/images/splash_image.png"
+  # image_dark: "assets/images/splash_image.png"
+
+  android_12:
+    image: assets/images/splash_image.png
+    icon_background_color: "#ffffff"
+    image_dark: assets/images/splash_image.png
+    icon_background_color_dark: "#121212"
+
+  android: true
+  ios: true

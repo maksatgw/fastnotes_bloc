@@ -33,7 +33,8 @@ class _NotesListScreenState extends State<NotesListScreen> {
         title: const Text('Notes'),
         actions: [
           BlocSelector<ThemeCubit, ThemeState, ThemeMode>(
-            selector: (state) => state.themeMode,
+            selector: (state) =>
+                state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
             builder: (context, themeMode) {
               return IconButton(
                 onPressed: () => context.read<ThemeCubit>().toggleTheme(),

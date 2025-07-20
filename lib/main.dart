@@ -1,3 +1,4 @@
+import 'package:fastnotes_bloc/core/storage/storage_service.dart';
 import 'package:fastnotes_bloc/core/theme/app_theme.dart';
 import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +8,12 @@ import 'package:fastnotes_bloc/core/theme/theme_cubit/theme_cubit.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/get_notes_usecase.dart';
 import 'package:fastnotes_bloc/core/router/app_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   // InjectionContainer ile dependency injection yapılıyor.
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
   await InjectionContainer.init();
   runApp(const FastNotesApp());
 }
@@ -25,7 +29,10 @@ class FastNotesApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         // ThemeCubit, uygulama temasını yönetir.
-        BlocProvider(create: (context) => ThemeCubit()),
+        BlocProvider(
+          create: (context) =>
+              ThemeCubit(InjectionContainer.getIt<StorageService>()),
+        ),
         // NotesBloc, notları yönetir.
         BlocProvider(
           create: (context) => NotesBloc(
@@ -43,7 +50,7 @@ class FastNotesApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             // ThemeCubit'ten themeMode'u alıyoruz.
-            themeMode: BlocProvider.of<ThemeCubit>(context).state.themeMode,
+            themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
             // Snackbar'ları yönetmek için SnackbarUtils kullanılıyor.
             scaffoldMessengerKey: SnackbarUtils.scaffoldMessengerKey,
           );

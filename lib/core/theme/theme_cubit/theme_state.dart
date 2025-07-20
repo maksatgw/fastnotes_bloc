@@ -1,7 +1,8 @@
 part of 'theme_cubit.dart';
 
+// ThemeState, themeMode'u yönetir.
 class ThemeState {
-  final ThemeMode themeMode;
+  final bool isDarkMode;
 
-  ThemeState({required this.themeMode});
+  ThemeState({required this.isDarkMode});
 }

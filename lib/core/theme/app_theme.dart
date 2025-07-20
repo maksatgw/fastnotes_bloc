@@ -14,6 +14,7 @@ class AppTheme {
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -34,6 +35,7 @@ class AppTheme {
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       backgroundColor: Colors.black,
+      surfaceTintColor: Colors.black,
       systemOverlayStyle: SystemUiOverlayStyle.light,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(

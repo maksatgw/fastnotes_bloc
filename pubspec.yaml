@@ -28,6 +28,11 @@ dependencies:
   json_annotation: ^4.9.0
   # Splash Screen
   flutter_native_splash: ^2.4.6
+  # External
+  google_sign_in: ^6.3.0
+  # Security
+  flutter_dotenv: ^5.2.1
+
 
 
 dev_dependencies:
@@ -43,6 +48,7 @@ flutter:
   assets:
     - assets/lotties/
     - assets/images/
+    - .env
 
 flutter_native_splash:
   color: "#ffffff"  

@@ -1,9 +1,14 @@
-import 'package:fastnotes_bloc/core/theme/theme_cubit/theme_cubit.dart';
+import 'package:fastnotes_bloc/core/constants/asset_constants.dart';
+import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_cubit.dart';
 import 'package:fastnotes_bloc/core/utils/date_utils.dart';
 import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
+import 'package:fastnotes_bloc/core/widgets/change_theme_button_widget.dart';
+import 'package:fastnotes_bloc/features/notes/domain/entities/note_entity.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/bloc/notes_bloc.dart';
+import 'package:fastnotes_bloc/features/notes/presentation/widgets/user_drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 
 class NotesListScreen extends StatefulWidget {
   const NotesListScreen({super.key});
@@ -18,9 +23,13 @@ class _NotesListScreenState extends State<NotesListScreen> {
   @override
   void initState() {
     super.initState();
+    // Drawer için kullanıcı bilgisini al.
+    context.read<LoggedUserCubit>().getLoggedUser();
+    // Sayfanın sonunda olup olmadığını kontrol et.
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 100) {
+        // Sayfanın sonunda ise daha fazla not yükle.
         context.read<NotesBloc>().add(LoadMoreNotesEvent());
       }
     });
@@ -31,21 +40,9 @@ class _NotesListScreenState extends State<NotesListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
-        actions: [
-          BlocSelector<ThemeCubit, ThemeState, ThemeMode>(
-            selector: (state) =>
-                state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            builder: (context, themeMode) {
-              return IconButton(
-                onPressed: () => context.read<ThemeCubit>().toggleTheme(),
-                icon: themeMode == ThemeMode.light
-                    ? const Icon(Icons.dark_mode)
-                    : const Icon(Icons.light_mode),
-              );
-            },
-          ),
-        ],
+        actions: [ChangeThemeButtonWidget()],
       ),
+      drawer: UserDrawerWidget(),
       body: BlocConsumer<NotesBloc, NotesState>(
         listener: (context, state) {
           // Hata durumunda snackbar göster
@@ -77,18 +74,11 @@ class _NotesListScreenState extends State<NotesListScreen> {
                       itemBuilder: (context, index) {
                         final note = state.notes?[index];
                         // Son item ise ve hasNext true ise loading indicator göster
-                        return ListTile(
-                          title: Text(note?.title ?? ''),
-                          subtitle: Text(note?.content ?? ''),
-                          trailing: Text(
-                            DateFormatUtils.formatDate(
-                              note?.createdAt ?? DateTime.now(),
-                            ),
-                          ),
-                        );
+                        return _noteTileWidget(note);
                       },
                     ),
                   ),
+                  // Sayfalama esnasında ekranın altında loading indicator göster.
                   if (state.isLoadingMore)
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -115,9 +105,32 @@ class _NotesListScreenState extends State<NotesListScreen> {
               ),
             );
           }
+
+          // Empty durumunda boş bırak
+          if (state is NotesEmptyState) {
+            return Center(
+              child: Column(
+                children: [
+                  Lottie.asset(AssetConstants.splashAnimation),
+                  Text('Not bulunamadı'),
+                ],
+              ),
+            );
+          }
+
           // Diğer durumlarda boş bırak
           return const SizedBox.shrink();
         },
+      ),
+    );
+  }
+
+  ListTile _noteTileWidget(NoteEntity? note) {
+    return ListTile(
+      title: Text(note?.title ?? ''),
+      subtitle: Text(note?.content ?? ''),
+      trailing: Text(
+        DateFormatUtils.formatDate(note?.createdAt ?? DateTime.now()),
       ),
     );
   }

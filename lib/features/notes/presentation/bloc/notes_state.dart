@@ -2,9 +2,13 @@ part of 'notes_bloc.dart';
 
 sealed class NotesState {}
 
-final class NotesInitial extends NotesState {}
+final class NotesInitial extends NotesState {
+  NotesInitial();
+}
 
-final class NotesLoadingState extends NotesState {}
+final class NotesLoadingState extends NotesState {
+  NotesLoadingState();
+}
 
 final class NotesLoadedState extends NotesState {
   final List<NoteEntity>? notes;
@@ -40,4 +44,10 @@ final class NotesErrorState extends NotesState {
   NotesErrorState({required this.message});
 }
 
-final class NotesRefreshingState extends NotesState {}
+final class NotesEmptyState extends NotesState {
+  NotesEmptyState();
+}
+
+final class NotesRefreshingState extends NotesState {
+  NotesRefreshingState();
+}

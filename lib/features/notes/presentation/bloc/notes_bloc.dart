@@ -8,9 +8,7 @@ part 'notes_state.dart';
 class NotesBloc extends Bloc<NotesEvent, NotesState> {
   final GetNotesUsecase _getNotesUsecase;
 
-  NotesBloc({required GetNotesUsecase getNotesUsecase})
-    : _getNotesUsecase = getNotesUsecase,
-      super(NotesInitial()) {
+  NotesBloc(this._getNotesUsecase) : super(NotesInitial()) {
     // İlk notları yükle
     on<GetNotesEvent>(_onGetNotes);
 
@@ -20,7 +18,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     // Notları yenile (Pull to Refresh)
     on<RefreshNotesEvent>(_onRefreshNotes);
 
-    // İlk notları yükle
+    // Bloc başlatıldığında GetNotesEvent'i tetikle
     add(GetNotesEvent());
   }
 
@@ -30,9 +28,12 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     Emitter<NotesState> emit,
   ) async {
     try {
+      // Loading state'ini göster
       emit(NotesLoadingState());
+      // Notları ve kullanıcı bilgisini al
       final result = await _getNotesUsecase.getInitialNotes();
 
+      // Eğer notlar varsa, NotesLoadedState'i göster
       if (result != null) {
         emit(
           NotesLoadedState(
@@ -43,14 +44,8 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
           ),
         );
       } else {
-        emit(
-          NotesLoadedState(
-            notes: [],
-            currentPage: 1,
-            hasNext: false,
-            isLoadingMore: false,
-          ),
-        );
+        // Eğer Notlar yoksa, boş liste gönder.
+        emit(NotesEmptyState());
       }
     } catch (e) {
       emit(NotesErrorState(message: e.toString()));
@@ -75,7 +70,6 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         // Bir sonraki sayfayı yükle
         final nextPage = currentState.currentPage + 1;
         final result = await _getNotesUsecase.getNotesForPage(nextPage);
-
         if (result != null) {
           // Mevcut notlarla yeni gelen notları birleştir
           currentState.notes?.addAll(result.notes);
@@ -108,7 +102,6 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     try {
       emit(NotesRefreshingState());
       final result = await _getNotesUsecase.getInitialNotes();
-
       if (result != null) {
         emit(
           NotesLoadedState(
@@ -119,14 +112,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
           ),
         );
       } else {
-        emit(
-          NotesLoadedState(
-            notes: [],
-            currentPage: 1,
-            hasNext: false,
-            isLoadingMore: false,
-          ),
-        );
+        emit(NotesEmptyState());
       }
     } catch (e) {
       emit(NotesErrorState(message: e.toString()));

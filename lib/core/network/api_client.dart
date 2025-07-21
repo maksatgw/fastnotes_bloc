@@ -33,4 +33,24 @@ class ApiClient {
       throw handleNetworkError(e);
     }
   }
+
+  // Post fonksiyonu, path ve data ile API'ye istek gönderir.
+  // Geriye, gerekli dönüşümleri kolaylaştırmak ve kullanılabilir hale getirmek için Map<String, dynamic> dönüyor.
+  Future<Map<String, dynamic>?> post(
+    String path, {
+    Map<String, dynamic>? data,
+  }) async {
+    try {
+      final response = await _dio.post(path, data: data);
+      if (response.statusCode == HttpStatus.ok) {
+        return response.data as Map<String, dynamic>;
+      }
+      return null;
+    } on DioException catch (e) {
+      if (kDebugMode) {
+        print(e.response?.data);
+      }
+      throw handleNetworkError(e);
+    }
+  }
 }

@@ -12,6 +12,9 @@ abstract class StorageService {
   Future<void> setBool(String key, bool value);
   Future<bool> getBool(String key);
   bool getBoolSync(String key);
+  Future<void> setString(String key, String value);
+  Future<String?> getString(String key);
+  String? getStringSync(String key);
   Future<void> clearAll();
 }
 
@@ -66,6 +69,33 @@ class StorageServiceImpl implements StorageService {
   Future<void> clearAll() async {
     try {
       await _appBox?.clear();
+    } catch (e) {
+      throw handleCacheError(CacheException(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<String?> getString(String key) async {
+    try {
+      return await _appBox?.get(key);
+    } catch (e) {
+      throw handleCacheError(CacheException(message: e.toString()));
+    }
+  }
+
+  @override
+  String? getStringSync(String key) {
+    try {
+      return _appBox?.get(key);
+    } catch (e) {
+      throw handleCacheError(CacheException(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<void> setString(String key, String value) async {
+    try {
+      await _appBox?.put(key, value);
     } catch (e) {
       throw handleCacheError(CacheException(message: e.toString()));
     }

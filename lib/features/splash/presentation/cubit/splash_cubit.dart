@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:fastnotes_bloc/core/storage/storage_service.dart';
+import 'package:fastnotes_bloc/features/splash/domain/usecases/splash_use_case.dart';
 
 part 'splash_state.dart';
 
 class SplashCubit extends Cubit<SplashState> {
-  final StorageService _storageService;
-  SplashCubit(this._storageService) : super(SplashInitial()) {
+  final SplashUseCase _splashUseCase;
+  SplashCubit(this._splashUseCase) : super(SplashInitial()) {
     startSplash();
   }
 
@@ -16,11 +16,11 @@ class SplashCubit extends Cubit<SplashState> {
   }
 
   Future<void> checkAuth() async {
-    final token = await _storageService.getString("token");
-    if (token != null) {
-      emit(SplashAuthenticated());
-    } else {
-      emit(SplashUnauthenticated());
-    }
+    final result = await _splashUseCase.checkAuth();
+    result.fold(
+      (failure) => emit(SplashError(message: failure.message)),
+      (success) =>
+          emit(success ? SplashAuthenticated() : SplashUnauthenticated()),
+    );
   }
 }

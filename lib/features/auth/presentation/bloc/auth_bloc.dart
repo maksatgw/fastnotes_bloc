@@ -12,29 +12,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onLoginEvent(LoginEvent event, Emitter<AuthState> emit) async {
-    try {
-      emit(AuthLoading());
-      final authEntity = await _authUseCase.login();
-      if (authEntity != null) {
-        emit(AuthSuccess());
-      }
-    } catch (e) {
-      emit(AuthError());
-    }
+    emit(AuthLoading());
+    final authEntity = await _authUseCase.login();
+    authEntity.fold(
+      (failure) => emit(AuthError()),
+      (success) => emit(AuthSuccess()),
+    );
   }
 
   Future<void> _onLogoutEvent(
     LogoutEvent event,
     Emitter<AuthState> emit,
   ) async {
-    try {
-      emit(AuthLoading());
-      final isLoggedOut = await _authUseCase.logOut();
-      if (isLoggedOut) {
-        emit(AuthLoggedOut());
-      }
-    } catch (e) {
-      emit(AuthError());
-    }
+    emit(AuthLoading());
+    final isLoggedOut = await _authUseCase.logOut();
+    isLoggedOut.fold(
+      (failure) => emit(AuthError()),
+      (success) => emit(AuthLoggedOut()),
+    );
   }
 }

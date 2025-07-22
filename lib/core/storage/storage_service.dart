@@ -1,5 +1,4 @@
-import 'package:fastnotes_bloc/core/errors/exception_handler.dart';
-import 'package:fastnotes_bloc/core/errors/exceptions.dart';
+import 'package:fastnotes_bloc/core/errors/failures.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveBoxes {
@@ -32,7 +31,7 @@ class StorageServiceImpl implements StorageService {
       // Hive Box'ı açıyoruz.
       _appBox = await Hive.openBox(HiveBoxes.app);
     } catch (e) {
-      throw handleCacheError(CacheException(message: e.toString()));
+      throw CacheFailure(message: e.toString());
     }
   }
 
@@ -42,7 +41,7 @@ class StorageServiceImpl implements StorageService {
     try {
       return await _appBox?.get(key) ?? false;
     } catch (e) {
-      throw handleCacheError(CacheException(message: e.toString()));
+      throw CacheFailure(message: e.toString());
     }
   }
 
@@ -51,7 +50,7 @@ class StorageServiceImpl implements StorageService {
     try {
       return _appBox?.get(key) ?? false;
     } catch (e) {
-      throw handleCacheError(CacheException(message: e.toString()));
+      throw CacheFailure(message: e.toString());
     }
   }
 
@@ -60,7 +59,7 @@ class StorageServiceImpl implements StorageService {
     try {
       await _appBox?.put(key, value);
     } catch (e) {
-      throw handleCacheError(CacheException(message: e.toString()));
+      throw CacheFailure(message: e.toString());
     }
   }
 
@@ -70,7 +69,7 @@ class StorageServiceImpl implements StorageService {
     try {
       await _appBox?.clear();
     } catch (e) {
-      throw handleCacheError(CacheException(message: e.toString()));
+      throw CacheFailure(message: e.toString());
     }
   }
 
@@ -79,7 +78,7 @@ class StorageServiceImpl implements StorageService {
     try {
       return await _appBox?.get(key);
     } catch (e) {
-      throw handleCacheError(CacheException(message: e.toString()));
+      throw CacheFailure(message: e.toString());
     }
   }
 
@@ -88,7 +87,7 @@ class StorageServiceImpl implements StorageService {
     try {
       return _appBox?.get(key);
     } catch (e) {
-      throw handleCacheError(CacheException(message: e.toString()));
+      throw CacheFailure(message: e.toString());
     }
   }
 
@@ -97,7 +96,7 @@ class StorageServiceImpl implements StorageService {
     try {
       await _appBox?.put(key, value);
     } catch (e) {
-      throw handleCacheError(CacheException(message: e.toString()));
+      throw CacheFailure(message: e.toString());
     }
   }
 }

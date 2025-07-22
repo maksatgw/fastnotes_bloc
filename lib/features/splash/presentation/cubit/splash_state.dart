@@ -6,10 +6,12 @@ final class SplashInitial extends SplashState {}
 
 final class SplashAnimating extends SplashState {}
 
-final class SplashCompleted extends SplashState {}
-
 final class SplashAuthenticated extends SplashState {}
 
 final class SplashUnauthenticated extends SplashState {}
 
-final class SplashError extends SplashState {}
+final class SplashError extends SplashState {
+  final String message;
+
+  SplashError({required this.message});
+}

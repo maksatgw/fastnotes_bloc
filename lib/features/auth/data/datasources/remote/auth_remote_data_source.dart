@@ -25,14 +25,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<AuthModel?> login() async {
     final googleUser = await _googleSignIn.signIn();
     if (googleUser == null) {
-      print('Google user is null');
       return null;
     }
 
     final googleAuth = await googleUser.authentication;
 
     if (googleAuth.idToken == null) {
-      print('Google auth is null');
       return null;
     }
 
@@ -41,16 +39,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {'idToken': googleAuth.idToken},
     );
 
-    print(response);
+    if (response != null) {
+      return AuthModel.fromJson(response);
+    }
 
-    return response != null ? AuthModel.fromJson(response) : null;
+    return null;
   }
 
   @override
   Future<GoogleSignInAccount?> getLoggedInUser() async {
     final user = _googleSignIn.currentUser;
     if (user == null) {
-      print('Google user is null');
       return null;
     }
     return user;

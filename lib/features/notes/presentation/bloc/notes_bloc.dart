@@ -27,29 +27,29 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     GetNotesEvent event,
     Emitter<NotesState> emit,
   ) async {
-    try {
-      // Loading state'ini göster
-      emit(NotesLoadingState());
-      // Notları ve kullanıcı bilgisini al
-      final result = await _getNotesUsecase.getInitialNotes();
+    // Loading state'ini göster
+    emit(NotesLoadingState());
+    // Notları ve kullanıcı bilgisini al
+    final result = await _getNotesUsecase.getInitialNotes();
 
-      // Eğer notlar varsa, NotesLoadedState'i göster
-      if (result != null) {
-        emit(
-          NotesLoadedState(
-            notes: result.notes,
-            currentPage: 1,
-            hasNext: result.hasNext,
-            isLoadingMore: false,
-          ),
-        );
-      } else {
-        // Eğer Notlar yoksa, boş liste gönder.
-        emit(NotesEmptyState());
-      }
-    } catch (e) {
-      emit(NotesErrorState(message: e.toString()));
-    }
+    result.fold(
+      // Result, eğer exception'a düşerse, NotesErrorState'i göster
+      (failure) => emit(NotesErrorState(message: failure.message)),
+      (success) {
+        if (success.notes.isEmpty) {
+          emit(NotesEmptyState());
+        } else {
+          emit(
+            NotesLoadedState(
+              notes: success.notes,
+              currentPage: 1,
+              hasNext: success.hasNext,
+              isLoadingMore: false,
+            ),
+          );
+        }
+      },
+    );
   }
 
   // Infinite Scrolling - Yeni sayfa yükleme
@@ -63,34 +63,34 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     if (currentState is NotesLoadedState &&
         currentState.hasNext &&
         !currentState.isLoadingMore) {
-      try {
-        // Loading state'ini göster
-        emit(currentState.copyWith(isLoadingMore: true));
+      // Loading state'ini göster
+      // Copywith ile aynı nesneyi fieldları aynı tutuyoruz ve isLoadingMore'ı true yapıyoruz.
+      emit(currentState.copyWith(isLoadingMore: true));
 
-        // Bir sonraki sayfayı yükle
-        final nextPage = currentState.currentPage + 1;
-        final result = await _getNotesUsecase.getNotesForPage(nextPage);
-        if (result != null) {
-          // Mevcut notlarla yeni gelen notları birleştir
-          currentState.notes?.addAll(result.notes);
+      // Bir sonraki sayfayı yükle
+      final nextPage = currentState.currentPage + 1;
+      final result = await _getNotesUsecase.getNotesForPage(nextPage);
 
-          emit(
-            NotesLoadedState(
-              notes: currentState.notes,
-              currentPage: nextPage,
-              hasNext: result.hasNext,
-              isLoadingMore: false,
-            ),
-          );
-        } else {
-          // Hata durumunda loading state'ini kapat
-          emit(currentState.copyWith(isLoadingMore: false));
-        }
-      } catch (e) {
-        // Hata durumunda loading state'ini kapat ve hata göster
-        emit(currentState.copyWith(isLoadingMore: false));
-        emit(NotesErrorState(message: e.toString()));
-      }
+      result.fold(
+        (failure) => emit(NotesErrorState(message: failure.message)),
+        (success) {
+          if (success.notes.isEmpty) {
+            emit(NotesEmptyState());
+          } else {
+            // Mevcut notlarla yeni gelen notları birleştir
+            currentState.notes?.addAll(success.notes);
+
+            emit(
+              NotesLoadedState(
+                notes: currentState.notes,
+                currentPage: nextPage,
+                hasNext: success.hasNext,
+                isLoadingMore: false,
+              ),
+            );
+          }
+        },
+      );
     }
   }
 
@@ -99,23 +99,25 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     RefreshNotesEvent event,
     Emitter<NotesState> emit,
   ) async {
-    try {
-      emit(NotesRefreshingState());
-      final result = await _getNotesUsecase.getInitialNotes();
-      if (result != null) {
-        emit(
-          NotesLoadedState(
-            notes: result.notes,
-            currentPage: 1,
-            hasNext: result.hasNext,
-            isLoadingMore: false,
-          ),
-        );
-      } else {
-        emit(NotesEmptyState());
-      }
-    } catch (e) {
-      emit(NotesErrorState(message: e.toString()));
-    }
+    emit(NotesRefreshingState());
+    final result = await _getNotesUsecase.getInitialNotes();
+
+    result.fold(
+      (failure) => emit(NotesErrorState(message: failure.message)),
+      (success) {
+        if (success.notes.isEmpty) {
+          emit(NotesEmptyState());
+        } else {
+          emit(
+            NotesLoadedState(
+              notes: success.notes,
+              currentPage: 1,
+              hasNext: success.hasNext,
+              isLoadingMore: false,
+            ),
+          );
+        }
+      },
+    );
   }
 }

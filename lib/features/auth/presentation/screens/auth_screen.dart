@@ -24,15 +24,22 @@ class AuthScreen extends StatelessWidget {
               context.go(RouteNames.auth);
             }
             if (state is AuthError) {
-              SnackbarUtils.showErrorSnackbar('Login failed');
+              SnackbarUtils.showErrorSnackbar(
+                'Login failed, please try again',
+              );
             }
           },
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
-              return ElevatedButton(
-                onPressed: () => context.read<AuthBloc>().add(LoginEvent()),
-                child: const Text('Login with Google'),
-              );
+              return state is AuthLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ElevatedButton(
+                      onPressed: () =>
+                          context.read<AuthBloc>().add(LoginEvent()),
+                      child: const Text('Login with Google'),
+                    );
             },
           ),
         ),

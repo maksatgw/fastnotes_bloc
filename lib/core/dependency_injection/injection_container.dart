@@ -1,6 +1,7 @@
 import 'package:fastnotes_bloc/core/network/api_client.dart';
 import 'package:fastnotes_bloc/core/storage/storage_service.dart';
 import 'package:fastnotes_bloc/core/usecases/get_logged_user_use_case.dart';
+import 'package:fastnotes_bloc/features/auth/data/datasources/local/auth_local_data_source.dart';
 import 'package:fastnotes_bloc/features/auth/data/datasources/remote/auth_remote_data_source.dart';
 import 'package:fastnotes_bloc/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:fastnotes_bloc/features/auth/domain/repositories/auth_repository.dart';
@@ -9,6 +10,10 @@ import 'package:fastnotes_bloc/features/notes/data/datasources/remote/note_remot
 import 'package:fastnotes_bloc/features/notes/data/repositories/note_repository_impl.dart';
 import 'package:fastnotes_bloc/features/notes/domain/repositories/note_repository.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/get_notes_usecase.dart';
+import 'package:fastnotes_bloc/features/splash/data/datasources/local/splash_local_data_source.dart';
+import 'package:fastnotes_bloc/features/splash/data/repositories/splash_repository_impl.dart';
+import 'package:fastnotes_bloc/features/splash/domain/repositories/splash_repository.dart';
+import 'package:fastnotes_bloc/features/splash/domain/usecases/splash_use_case.dart';
 import 'package:get_it/get_it.dart';
 
 // Dependency Injection
@@ -27,8 +32,21 @@ class InjectionContainer {
     getIt.registerSingleton<ApiClient>(ApiClient());
     await initAuth();
     await initNotes();
+    await initSplash();
     getIt.registerSingleton<GetLoggedUserUseCase>(
       GetLoggedUserUseCase(getIt<StorageService>()),
+    );
+  }
+
+  static Future<void> initSplash() async {
+    getIt.registerSingleton<SplashLocalDataSource>(
+      SplashLocalDataSourceImpl(getIt<StorageService>()),
+    );
+    getIt.registerSingleton<SplashRepository>(
+      SplashRepositoryImpl(getIt<SplashLocalDataSource>()),
+    );
+    getIt.registerFactory<SplashUseCase>(
+      () => SplashUseCase(getIt<SplashRepository>()),
     );
   }
 
@@ -36,11 +54,14 @@ class InjectionContainer {
     getIt.registerSingleton<AuthRemoteDataSource>(
       AuthRemoteDataSourceImpl(getIt<ApiClient>()),
     );
+    getIt.registerSingleton<AuthLocalDataSource>(
+      AuthLocalDataSourceImpl(getIt<StorageService>()),
+    );
     // Repository
     getIt.registerSingleton<AuthRepository>(
       AuthRepositoryImpl(
         getIt<AuthRemoteDataSource>(),
-        getIt<StorageService>(),
+        getIt<AuthLocalDataSource>(),
       ),
     );
     // UseCaseler

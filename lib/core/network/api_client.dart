@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:fastnotes_bloc/core/constants/api_constants.dart';
-import 'package:fastnotes_bloc/core/errors/exception_handler.dart';
+import 'package:fastnotes_bloc/core/errors/failures_handler.dart';
 import 'package:flutter/foundation.dart';
 
 // API Çağrıları için singleton kullanılacak generic yapı
@@ -12,7 +12,15 @@ class ApiClient {
   final Dio _dio;
 
   // Dio'nun baseOptions'u ApiConstants.baseUrl ile oluşturuluyor.
-  ApiClient() : _dio = Dio(BaseOptions(baseUrl: ApiConstants.baseUrl));
+  ApiClient()
+    : _dio = Dio(
+        BaseOptions(
+          baseUrl: ApiConstants.baseUrl,
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
+          sendTimeout: const Duration(seconds: 10),
+        ),
+      );
 
   // Get fonksiyonu, path ve queryParameters ile API'ye istek gönderir.
   // Geriye, gerekli dönüşümleri kolaylaştırmak ve kullanılabilir hale getirmek için Map<String, dynamic> dönüyor.
@@ -30,7 +38,7 @@ class ApiClient {
       if (kDebugMode) {
         print(e.response?.data);
       }
-      throw handleNetworkError(e);
+      throw handleServerFailure(e);
     }
   }
 
@@ -50,7 +58,7 @@ class ApiClient {
       if (kDebugMode) {
         print(e.response?.data);
       }
-      throw handleNetworkError(e);
+      throw handleServerFailure(e);
     }
   }
 }

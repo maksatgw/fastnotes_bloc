@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:fastnotes_bloc/core/errors/failures.dart';
 import 'package:fastnotes_bloc/features/auth/domain/entities/auth_entity.dart';
 import 'package:fastnotes_bloc/features/auth/domain/repositories/auth_repository.dart';
 
@@ -6,15 +8,15 @@ class AuthUseCase {
 
   AuthUseCase(this._authRepository);
 
-  Future<AuthEntity?> login() async {
+  Future<Either<Failure, AuthEntity>> login() async {
     return await _authRepository.login();
   }
 
-  Future<AuthEntity?> refreshToken(String refreshToken) async {
+  Future<Either<Failure, AuthEntity>> refreshToken(String refreshToken) async {
     return await _authRepository.refreshToken(refreshToken);
   }
 
-  Future<bool> logOut() async {
+  Future<Either<Failure, void>> logOut() async {
     return await _authRepository.logOut();
   }
 }

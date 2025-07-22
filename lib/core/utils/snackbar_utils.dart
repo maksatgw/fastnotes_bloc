@@ -13,7 +13,7 @@ class SnackbarUtils {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.blue,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 5),
       ),
     );
   }
@@ -24,7 +24,7 @@ class SnackbarUtils {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 5),
       ),
     );
   }
@@ -35,7 +35,7 @@ class SnackbarUtils {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.grey[500],
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 5),
       ),
     );
   }

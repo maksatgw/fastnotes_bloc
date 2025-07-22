@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:fastnotes_bloc/core/errors/failures.dart';
 import 'package:fastnotes_bloc/features/notes/data/datasources/remote/note_remote_data_source.dart';
 import 'package:fastnotes_bloc/features/notes/domain/entities/note_entity.dart';
 import 'package:fastnotes_bloc/features/notes/domain/entities/paginated_notes_entity.dart';
@@ -15,28 +17,36 @@ class NoteRepositoryImpl implements NoteRepository {
 
   // GetNotes fonksiyonu, API'den notları çeker.
   @override
-  Future<PaginatedNotesEntity?> getNotes(int page) async {
-    // NoteRemoteDataSource'dan notları çeker.
-    var response = await _noteRemoteDataSource.getNotes(page);
+  Future<Either<Failure, PaginatedNotesEntity>> getNotes(int page) async {
+    // Try catch ile hata yakalama
+    try {
+      var response = await _noteRemoteDataSource.getNotes(page);
 
-    // Eğer response null ise, null dönüyoruz.
-    if (response == null) return null;
+      if (response == null) {
+        return Left(ServerFailure(message: 'Response is null'));
+      }
+      var entity = PaginatedNotesEntity(
+        notes: response.value
+            .map(
+              (noteModel) => NoteEntity(
+                id: noteModel.id,
+                title: noteModel.title,
+                content: noteModel.content,
+                createdAt: noteModel.createdAt,
+                updatedAt: noteModel.updatedAt,
+              ),
+            )
+            .toList(),
+        hasNext: response.hasNext,
+        pageNumber: response.pageNumber,
+      );
 
-    // NoteEntity'e dönüştürüyoruz.
-    return PaginatedNotesEntity(
-      notes: response.value
-          .map(
-            (noteModel) => NoteEntity(
-              id: noteModel.id,
-              title: noteModel.title,
-              content: noteModel.content,
-              createdAt: noteModel.createdAt,
-              updatedAt: noteModel.updatedAt,
-            ),
-          )
-          .toList(),
-      hasNext: response.hasNext,
-      pageNumber: response.pageNumber,
-    );
+      // NoteEntity'e dönüştürüyoruz.
+      return Right(entity);
+    } on ServerFailure catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(UnexpectedFailure(message: e.toString()));
+    }
   }
 }

@@ -5,6 +5,7 @@ import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_
 import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
 import 'package:fastnotes_bloc/features/auth/domain/usecases/auth_use_case.dart';
 import 'package:fastnotes_bloc/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:fastnotes_bloc/features/splash/domain/usecases/splash_use_case.dart';
 import 'package:fastnotes_bloc/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,7 +47,7 @@ class FastNotesApp extends StatelessWidget {
         // SplashCubit, splash ekranını yönetir.
         BlocProvider(
           create: (context) =>
-              SplashCubit(InjectionContainer.getIt<StorageService>()),
+              SplashCubit(InjectionContainer.getIt<SplashUseCase>()),
         ),
         // NotesBloc, notları yönetir.
         BlocProvider(

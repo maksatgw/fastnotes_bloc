@@ -5,7 +5,8 @@ import 'package:fastnotes_bloc/features/notes/data/models/note_model.dart';
 
 // Uzak veri kaynağı için arayüz
 abstract class NoteRemoteDataSource {
-  Future<PaginatedResponseModel<NoteModel>?> getNotes(int page);
+  Future<PaginatedResponseModel<NoteModel>?> getNotes(int page, String userId);
+  Future<bool> createNote(NoteModel note);
 }
 
 // Uzak veri kaynağı için implementasyon
@@ -19,11 +20,18 @@ class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
 
   // GetNotes fonksiyonu, API'den notları çeker.
   @override
-  Future<PaginatedResponseModel<NoteModel>?> getNotes(int page) async {
+  Future<PaginatedResponseModel<NoteModel>?> getNotes(
+    int page,
+    String userId,
+  ) async {
     var response = await _apiClient.get(
       ApiConstants.notes,
       // TODO: pageSize'ı kullanıcının tercihine göre ayarlayın
-      queryParameters: {'pageNumber': page, 'pageSize': 15},
+      queryParameters: {
+        'pageNumber': page,
+        'pageSize': 15,
+        'userId': userId,
+      },
     );
 
     // Eğer response null ise, null dönüyoruz.
@@ -34,5 +42,14 @@ class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
       response,
       (json) => NoteModel.fromJson(json as Map<String, dynamic>),
     );
+  }
+
+  @override
+  Future<bool> createNote(NoteModel note) async {
+    var response = await _apiClient.post(
+      ApiConstants.notes,
+      data: note.toJsonForCreate(),
+    );
+    return response != null;
   }
 }

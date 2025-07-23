@@ -51,3 +51,12 @@ final class NotesEmptyState extends NotesState {
 final class NotesRefreshingState extends NotesState {
   NotesRefreshingState();
 }
+
+final class NotesCreatingState extends NotesState {}
+
+final class NotesCreatedState extends NotesState {}
+
+final class ValidationState extends NotesState {
+  final String message;
+  ValidationState({required this.message});
+}

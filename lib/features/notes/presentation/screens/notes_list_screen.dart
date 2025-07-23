@@ -1,4 +1,5 @@
 import 'package:fastnotes_bloc/core/constants/asset_constants.dart';
+import 'package:fastnotes_bloc/core/router/route_names.dart';
 import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_cubit.dart';
 import 'package:fastnotes_bloc/core/utils/date_utils.dart';
 import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
@@ -8,6 +9,7 @@ import 'package:fastnotes_bloc/features/notes/presentation/bloc/notes_bloc.dart'
 import 'package:fastnotes_bloc/features/notes/presentation/widgets/user_drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
 class NotesListScreen extends StatefulWidget {
@@ -41,6 +43,12 @@ class _NotesListScreenState extends State<NotesListScreen> {
       appBar: AppBar(
         title: const Text('Notes'),
         actions: [ChangeThemeButtonWidget()],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.push(RouteNames.notesCreate);
+        },
+        child: const Icon(Icons.add),
       ),
       drawer: UserDrawerWidget(),
       body: BlocConsumer<NotesBloc, NotesState>(
@@ -110,6 +118,8 @@ class _NotesListScreenState extends State<NotesListScreen> {
           if (state is NotesEmptyState) {
             return Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Lottie.asset(AssetConstants.splashAnimation),
                   Text('Not bulunamadı'),

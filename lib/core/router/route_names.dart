@@ -7,6 +7,7 @@ class RouteNames {
 
   // Notes
   static const String notesList = '/notes';
+  static const String notesCreate = '/notes/create';
 
   // Auth
   static const String auth = '/auth';

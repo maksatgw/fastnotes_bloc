@@ -6,9 +6,11 @@ import 'package:fastnotes_bloc/features/auth/data/datasources/remote/auth_remote
 import 'package:fastnotes_bloc/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:fastnotes_bloc/features/auth/domain/repositories/auth_repository.dart';
 import 'package:fastnotes_bloc/features/auth/domain/usecases/auth_use_case.dart';
+import 'package:fastnotes_bloc/features/notes/data/datasources/local/note_local_data_source.dart';
 import 'package:fastnotes_bloc/features/notes/data/datasources/remote/note_remote_data_source.dart';
 import 'package:fastnotes_bloc/features/notes/data/repositories/note_repository_impl.dart';
 import 'package:fastnotes_bloc/features/notes/domain/repositories/note_repository.dart';
+import 'package:fastnotes_bloc/features/notes/domain/usecases/create_notes_usecase.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/get_notes_usecase.dart';
 import 'package:fastnotes_bloc/features/splash/data/datasources/local/splash_local_data_source.dart';
 import 'package:fastnotes_bloc/features/splash/data/repositories/splash_repository_impl.dart';
@@ -81,9 +83,15 @@ class InjectionContainer {
     getIt.registerSingleton<NoteRemoteDataSource>(
       NoteRemoteDataSourceImpl(getIt<ApiClient>()),
     );
+    getIt.registerSingleton<NoteLocalDataSource>(
+      NoteLocalDataSourceImpl(getIt<StorageService>()),
+    );
     // Repository
     getIt.registerSingleton<NoteRepository>(
-      NoteRepositoryImpl(getIt<NoteRemoteDataSource>()),
+      NoteRepositoryImpl(
+        getIt<NoteRemoteDataSource>(),
+        getIt<NoteLocalDataSource>(),
+      ),
     );
     // UseCaseler
     getIt.registerFactory<GetNotesUsecase>(
@@ -91,6 +99,9 @@ class InjectionContainer {
         getIt<NoteRepository>(),
         getIt<GetLoggedUserUseCase>(),
       ),
+    );
+    getIt.registerFactory<CreateNotesUsecase>(
+      () => CreateNotesUsecase(getIt<NoteRepository>()),
     );
   }
 }

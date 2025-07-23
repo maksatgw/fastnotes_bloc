@@ -6,24 +6,32 @@ part 'note_model.g.dart';
 
 @JsonSerializable()
 class NoteModel {
-  final int id;
+  final int? id;
   final String title;
   final String content;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final String userId;
 
   NoteModel({
-    required this.id,
+    this.id,
     required this.title,
     required this.content,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     required this.userId,
   });
 
   factory NoteModel.fromJson(Map<String, dynamic> json) =>
       _$NoteModelFromJson(json);
 
+  //TODO: Sorulacak. toJson yönetiminin böyle olması gerekiyor mu?
   Map<String, dynamic> toJson() => _$NoteModelToJson(this);
+
+  // Create işlemi için özel toJson metodu - id, createdAt ve updatedAt içermez
+  Map<String, dynamic> toJsonForCreate() => {
+    'title': title,
+    'content': content,
+    'userId': userId,
+  };
 }

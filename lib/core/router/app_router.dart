@@ -1,5 +1,6 @@
 import 'package:fastnotes_bloc/core/router/route_names.dart';
 import 'package:fastnotes_bloc/features/auth/presentation/screens/auth_screen.dart';
+import 'package:fastnotes_bloc/features/notes/presentation/screens/notes_create_screen.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/screens/notes_list_screen.dart';
 import 'package:fastnotes_bloc/features/splash/presentation/screens/splash_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -23,6 +24,10 @@ class AppRouter {
       GoRoute(
         path: RouteNames.notesList,
         builder: (context, state) => NotesListScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.notesCreate,
+        builder: (context, state) => NotesCreateScreen(),
       ),
     ],
   );

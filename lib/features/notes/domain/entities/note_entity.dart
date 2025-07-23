@@ -2,17 +2,17 @@
 // Business logicler için kullanılır.
 
 class NoteEntity {
-  final int id;
+  final int? id;
   final String title;
   final String content;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   NoteEntity({
-    required this.id,
+    this.id,
     required this.title,
     required this.content,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 }

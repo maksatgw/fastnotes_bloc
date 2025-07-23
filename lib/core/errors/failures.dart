@@ -33,3 +33,7 @@ class UnexpectedFailure extends Failure {
 class ConnectionFailure extends Failure {
   const ConnectionFailure({required super.message});
 }
+
+class ValidationFailure extends Failure {
+  const ValidationFailure({required super.message});
+}

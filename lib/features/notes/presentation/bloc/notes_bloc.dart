@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:fastnotes_bloc/features/notes/domain/entities/note_entity.dart';
+import 'package:fastnotes_bloc/features/notes/domain/usecases/create_notes_usecase.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/get_notes_usecase.dart';
 
 part 'notes_event.dart';
@@ -7,8 +8,10 @@ part 'notes_state.dart';
 
 class NotesBloc extends Bloc<NotesEvent, NotesState> {
   final GetNotesUsecase _getNotesUsecase;
+  final CreateNotesUsecase _createNotesUsecase;
 
-  NotesBloc(this._getNotesUsecase) : super(NotesInitial()) {
+  NotesBloc(this._getNotesUsecase, this._createNotesUsecase)
+    : super(NotesInitial()) {
     // İlk notları yükle
     on<GetNotesEvent>(_onGetNotes);
 
@@ -17,6 +20,9 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
     // Notları yenile (Pull to Refresh)
     on<RefreshNotesEvent>(_onRefreshNotes);
+
+    // Not oluşturma
+    on<CreateNoteEvent>(_onValidateCreateNote);
 
     // Bloc başlatıldığında GetNotesEvent'i tetikle
     add(GetNotesEvent());
@@ -118,6 +124,34 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
           );
         }
       },
+    );
+  }
+
+  Future<void> _onValidateCreateNote(
+    CreateNoteEvent event,
+    Emitter<NotesState> emit,
+  ) async {
+    final validationResult = _createNotesUsecase.validateNote(event.note);
+    await validationResult.fold(
+      (failure) async {
+        emit(ValidationState(message: failure.message));
+      },
+      (success) async {
+        await _onCreateNote(event, emit);
+      },
+    );
+  }
+
+  Future<void> _onCreateNote(
+    CreateNoteEvent event,
+    Emitter<NotesState> emit,
+  ) async {
+    emit(NotesCreatingState());
+
+    final result = await _createNotesUsecase.createNote(event.note);
+    result.fold(
+      (failure) => emit(NotesErrorState(message: failure.message)),
+      (success) => emit(NotesCreatedState()),
     );
   }
 }

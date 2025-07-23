@@ -15,15 +15,11 @@ import 'package:fastnotes_bloc/features/notes/presentation/bloc/notes_bloc.dart'
 import 'package:fastnotes_bloc/features/notes/domain/usecases/get_notes_usecase.dart';
 import 'package:fastnotes_bloc/core/router/app_router.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   // InjectionContainer ile dependency injection yapılıyor.
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await dotenv.load(fileName: ".env");
-  await Hive.initFlutter();
   await InjectionContainer.init();
   FlutterNativeSplash.remove();
   runApp(const FastNotesApp());

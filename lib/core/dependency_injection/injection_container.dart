@@ -25,8 +25,7 @@ class InjectionContainer {
   // Bu fonksiyon, uygulama başladığında çağrılır.
   static Future<void> init() async {
     // Core - Storage
-    getIt.registerSingleton<StorageService>(StorageServiceImpl());
-    await getIt<StorageService>().init();
+    await initStorage();
 
     // Core - Network
     getIt.registerSingleton<ApiClient>(ApiClient());
@@ -36,6 +35,11 @@ class InjectionContainer {
     getIt.registerSingleton<GetLoggedUserUseCase>(
       GetLoggedUserUseCase(getIt<StorageService>()),
     );
+  }
+
+  static Future<void> initStorage() async {
+    getIt.registerSingleton<StorageService>(StorageServiceImpl());
+    await getIt<StorageService>().init();
   }
 
   static Future<void> initSplash() async {

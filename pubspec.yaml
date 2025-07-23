@@ -30,8 +30,6 @@ dependencies:
   flutter_native_splash: ^2.4.6
   # External
   google_sign_in: ^6.3.0
-  # Security
-  flutter_dotenv: ^5.2.1
   # Error Handling
   dartz: ^0.10.1
 
@@ -51,7 +49,6 @@ flutter:
   assets:
     - assets/lotties/
     - assets/images/
-    - .env
 
 flutter_native_splash:
   color: "#ffffff"  

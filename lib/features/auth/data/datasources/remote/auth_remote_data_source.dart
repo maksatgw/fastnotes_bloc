@@ -1,7 +1,6 @@
 import 'package:fastnotes_bloc/core/constants/api_constants.dart';
 import 'package:fastnotes_bloc/core/network/api_client.dart';
 import 'package:fastnotes_bloc/features/auth/data/models/auth_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class AuthRemoteDataSource {
@@ -17,7 +16,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   AuthRemoteDataSourceImpl(this._apiClient)
     : _googleSignIn = GoogleSignIn(
-        serverClientId: dotenv.env['GOOGLE_SERVER_CLIENT_ID'],
+        serverClientId: ApiConstants.googleServerClientId,
         scopes: ['email', 'profile'],
       );
 

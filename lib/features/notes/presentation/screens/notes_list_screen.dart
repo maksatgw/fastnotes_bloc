@@ -1,5 +1,6 @@
 import 'package:fastnotes_bloc/core/constants/asset_constants.dart';
 import 'package:fastnotes_bloc/core/router/app_router.dart';
+import 'package:fastnotes_bloc/core/theme/theme_cubit/theme_cubit.dart';
 import 'package:fastnotes_bloc/core/router/route_names.dart';
 import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_cubit.dart';
 import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
@@ -71,7 +72,9 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
-        actions: [ChangeThemeButtonWidget()],
+        actions: [
+          _buildThemeSelectorButton(),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -103,7 +106,7 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
 
           // Empty durumunda boş bırak
           if (state is NotesEmptyState) {
-            return _buldEmptyState();
+            return _buildEmptyState();
           }
 
           // Diğer durumlarda boş bırak
@@ -113,10 +116,26 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
     );
   }
 
+  BlocSelector<ThemeCubit, ThemeState, ThemeMode> _buildThemeSelectorButton() {
+    return BlocSelector<ThemeCubit, ThemeState, ThemeMode>(
+      selector: (state) {
+        return state.isDarkMode ? ThemeMode.dark : ThemeMode.light;
+      },
+      builder: (context, state) {
+        return ChangeThemeButtonWidget(
+          onPressed: () {
+            context.read<ThemeCubit>().toggleTheme();
+          },
+          themeMode: state,
+        );
+      },
+    );
+  }
+
   Center _buildLoadingState() =>
       const Center(child: CircularProgressIndicator());
 
-  Center _buldEmptyState() {
+  Center _buildEmptyState() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -173,9 +192,9 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
           ),
           // Sayfalama esnasında ekranın altında loading indicator göster.
           if (state.isLoadingMore)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: Center(child: CircularProgressIndicator()),
+              child: _buildLoadingState(),
             ),
         ],
       ),
@@ -186,22 +205,16 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
     return BlocBuilder<LoggedUserCubit, LoggedUserState>(
       builder: (context, state) {
         if (state is UserLoaded) {
-          final user = state.user;
           return UserDrawerWidget(
             onLogout: () {
               context.read<AuthBloc>().add(LogoutEvent());
             },
-            photoUrl: user.photoUrl,
-            displayName: user.displayName,
-            email: user.email,
+            photoUrl: state.user.photoUrl,
+            displayName: state.user.displayName,
+            email: state.user.email,
           );
         }
-        // Error state veya diğer durumlar için sadece çıkış butonu göster
-        return UserDrawerWidget(
-          onLogout: () {
-            context.read<AuthBloc>().add(LogoutEvent());
-          },
-        );
+        return const SizedBox.shrink();
       },
     );
   }

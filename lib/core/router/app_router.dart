@@ -3,13 +3,21 @@ import 'package:fastnotes_bloc/features/auth/presentation/screens/auth_screen.da
 import 'package:fastnotes_bloc/features/notes/presentation/screens/notes_create_screen.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/screens/notes_list_screen.dart';
 import 'package:fastnotes_bloc/features/splash/presentation/screens/splash_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 // Uygulamadaki routing için GoRouter kullanılıyor.
 class AppRouter {
+  // RouteObserver, sayfa geçişlerini takip eder.
+  // Bu sayede, default aksiyonları takip edebiliriz.
+  // Örneğin, bir sayfadan geri gelindiğinde, bir event tetikleyebiliriz.
+  static final RouteObserver<ModalRoute<void>> routeObserver =
+      RouteObserver<ModalRoute<void>>();
+
   static final GoRouter router = GoRouter(
     // Başlangıçta gösterilecek sayfa
     initialLocation: RouteNames.splash,
+    observers: [routeObserver],
 
     routes: [
       // Auth

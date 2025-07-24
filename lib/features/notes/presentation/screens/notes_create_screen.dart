@@ -44,7 +44,6 @@ class _NotesCreateScreenState extends State<NotesCreateScreen> {
           }
           if (state is NotesCreatedState) {
             SnackbarUtils.showSuccessSnackbar('Not başarıyla oluşturuldu');
-            context.read<NotesBloc>().add(GetNotesEvent());
             context.pop();
           }
         },

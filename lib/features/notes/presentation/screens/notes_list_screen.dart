@@ -1,4 +1,5 @@
 import 'package:fastnotes_bloc/core/constants/asset_constants.dart';
+import 'package:fastnotes_bloc/core/router/app_router.dart';
 import 'package:fastnotes_bloc/core/router/route_names.dart';
 import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_cubit.dart';
 import 'package:fastnotes_bloc/core/utils/date_utils.dart';
@@ -19,7 +20,7 @@ class NotesListScreen extends StatefulWidget {
   State<NotesListScreen> createState() => _NotesListScreenState();
 }
 
-class _NotesListScreenState extends State<NotesListScreen> {
+class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -35,6 +36,34 @@ class _NotesListScreenState extends State<NotesListScreen> {
         context.read<NotesBloc>().add(LoadMoreNotesEvent());
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // RouteObserver'ı subscribe ediyoruz.
+    AppRouter.routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // RouteObserver'ı unsubscribe ediyoruz.
+    AppRouter.routeObserver.unsubscribe(this);
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    // Bir önceki sayfadan geri gelindiğinde notları yükle.
+    context.read<NotesBloc>().add(GetNotesEvent());
+  }
+
+  @override
+  void didPush() {
+    super.didPush();
+    // Yeni sayfa açıldığında notları yükle.
+    context.read<NotesBloc>().add(GetNotesEvent());
   }
 
   @override

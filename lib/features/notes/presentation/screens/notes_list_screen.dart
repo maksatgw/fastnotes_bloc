@@ -2,12 +2,12 @@ import 'package:fastnotes_bloc/core/constants/asset_constants.dart';
 import 'package:fastnotes_bloc/core/router/app_router.dart';
 import 'package:fastnotes_bloc/core/router/route_names.dart';
 import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_cubit.dart';
-import 'package:fastnotes_bloc/core/utils/date_utils.dart';
 import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
 import 'package:fastnotes_bloc/core/widgets/change_theme_button_widget.dart';
-import 'package:fastnotes_bloc/features/notes/domain/entities/note_entity.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/bloc/notes_bloc.dart';
+import 'package:fastnotes_bloc/features/notes/presentation/widgets/note_tile_widget.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/widgets/user_drawer_widget.dart';
+import 'package:fastnotes_bloc/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -79,7 +79,7 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
         },
         child: const Icon(Icons.add),
       ),
-      drawer: UserDrawerWidget(),
+      drawer: _buildDrawer(),
       body: BlocConsumer<NotesBloc, NotesState>(
         listener: (context, state) {
           // Hata durumunda snackbar göster
@@ -90,71 +90,20 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
         builder: (context, state) {
           // Loading durumunda loading indicator göster
           if (state is NotesLoadingState) {
-            return const Center(child: CircularProgressIndicator());
+            return _buildLoadingState();
           }
           // Loaded durumunda liste göster
           if (state is NotesLoadedState) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<NotesBloc>().add(RefreshNotesEvent());
-              },
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      physics: AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
-                      // Scroll controller ekleniyor
-                      controller: _scrollController,
-                      itemCount: state.notes?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final note = state.notes?[index];
-                        // Son item ise ve hasNext true ise loading indicator göster
-                        return _noteTileWidget(note);
-                      },
-                    ),
-                  ),
-                  // Sayfalama esnasında ekranın altında loading indicator göster.
-                  if (state.isLoadingMore)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                ],
-              ),
-            );
+            return _buildLoadedState(context, state);
           }
           // Hata durumunda hata mesajı ve tekrar dene butonu göster
           if (state is NotesErrorState) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Hata: ${state.message}'),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<NotesBloc>().add(GetNotesEvent());
-                    },
-                    child: const Text('Tekrar Dene'),
-                  ),
-                ],
-              ),
-            );
+            return _buildErrorState(state, context);
           }
 
           // Empty durumunda boş bırak
           if (state is NotesEmptyState) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Lottie.asset(AssetConstants.splashAnimation),
-                  Text('Not bulunamadı'),
-                ],
-              ),
-            );
+            return _buildEmptyState();
           }
 
           // Diğer durumlarda boş bırak
@@ -164,13 +113,96 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
     );
   }
 
-  ListTile _noteTileWidget(NoteEntity? note) {
-    return ListTile(
-      title: Text(note?.title ?? ''),
-      subtitle: Text(note?.content ?? ''),
-      trailing: Text(
-        DateFormatUtils.formatDate(note?.createdAt ?? DateTime.now()),
+  Center _buildLoadingState() =>
+      const Center(child: CircularProgressIndicator());
+
+  Center _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Lottie.asset(AssetConstants.splashAnimation),
+          Text('Not bulunamadı'),
+        ],
       ),
+    );
+  }
+
+  Center _buildErrorState(NotesErrorState state, BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Hata: ${state.message}'),
+          ElevatedButton(
+            onPressed: () {
+              context.read<NotesBloc>().add(GetNotesEvent());
+            },
+            child: const Text('Tekrar Dene'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  RefreshIndicator _buildLoadedState(
+    BuildContext context,
+    NotesLoadedState state,
+  ) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<NotesBloc>().add(RefreshNotesEvent());
+      },
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              physics: AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              // Scroll controller ekleniyor
+              controller: _scrollController,
+              itemCount: state.notes?.length ?? 0,
+              itemBuilder: (context, index) {
+                final note = state.notes?[index];
+                // Son item ise ve hasNext true ise loading indicator göster
+                return NoteTileWidget(note: note);
+              },
+            ),
+          ),
+          // Sayfalama esnasında ekranın altında loading indicator göster.
+          if (state.isLoadingMore)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+        ],
+      ),
+    );
+  }
+
+  BlocBuilder<LoggedUserCubit, LoggedUserState> _buildDrawer() {
+    return BlocBuilder<LoggedUserCubit, LoggedUserState>(
+      builder: (context, state) {
+        if (state is UserLoaded) {
+          final user = state.user;
+          return UserDrawerWidget(
+            onLogout: () {
+              context.read<AuthBloc>().add(LogoutEvent());
+            },
+            photoUrl: user.photoUrl,
+            displayName: user.displayName,
+            email: user.email,
+          );
+        }
+        // Error state veya diğer durumlar için sadece çıkış butonu göster
+        return UserDrawerWidget(
+          onLogout: () {
+            context.read<AuthBloc>().add(LogoutEvent());
+          },
+        );
+      },
     );
   }
 }

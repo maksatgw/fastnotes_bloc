@@ -37,3 +37,11 @@ class ConnectionFailure extends Failure {
 class ValidationFailure extends Failure {
   const ValidationFailure({required super.message});
 }
+
+class UnauthorizedFailure extends Failure {
+  const UnauthorizedFailure({required super.message});
+}
+
+class ForbiddenFailure extends Failure {
+  const ForbiddenFailure({required super.message});
+}

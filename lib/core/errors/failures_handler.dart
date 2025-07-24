@@ -10,7 +10,13 @@ Failure handleServerFailure(DioException e) {
     case DioExceptionType.receiveTimeout:
       return ConnectionFailure(message: 'Alım zaman aşımı');
     case DioExceptionType.badResponse:
-      return ServerFailure(message: 'Yanıt hatası');
+      if (e.response?.statusCode == 401) {
+        return UnauthorizedFailure(message: 'Oturum süresi doldu');
+      } else if (e.response?.statusCode == 403) {
+        return ForbiddenFailure(message: 'Bu işlem için yetkiniz yok');
+      } else {
+        return ServerFailure(message: 'Yanıt hatası');
+      }
     case DioExceptionType.cancel:
       return ConnectionFailure(message: 'İstek iptal edildi');
     case DioExceptionType.badCertificate:

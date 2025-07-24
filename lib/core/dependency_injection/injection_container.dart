@@ -1,4 +1,5 @@
 import 'package:fastnotes_bloc/core/network/api_client.dart';
+import 'package:fastnotes_bloc/core/network/auth_interceptor.dart';
 import 'package:fastnotes_bloc/core/storage/storage_service.dart';
 import 'package:fastnotes_bloc/core/usecases/get_logged_user_use_case.dart';
 import 'package:fastnotes_bloc/features/auth/data/datasources/local/auth_local_data_source.dart';
@@ -30,7 +31,13 @@ class InjectionContainer {
     await initStorage();
 
     // Core - Network
-    getIt.registerSingleton<ApiClient>(ApiClient());
+    getIt.registerSingleton<AuthInterceptor>(
+      AuthInterceptor(getIt<StorageService>()),
+    );
+    getIt.registerSingleton<ApiClient>(
+      ApiClient(getIt<AuthInterceptor>()),
+    );
+
     await initAuth();
     await initNotes();
     await initSplash();

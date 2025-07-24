@@ -24,7 +24,7 @@ class AuthInterceptor extends Interceptor {
     if (err.response?.statusCode == 401) {
       // 401 hatası gelirse, token'ı sil ve login sayfasına yönlendir
       _storageService.clearAll();
-      AppRouter.router.go(RouteNames.auth);
+      AppRouter.router.go(RouteNames.splash);
     }
     handler.next(err); // Hata zinciri devam etsin
   }

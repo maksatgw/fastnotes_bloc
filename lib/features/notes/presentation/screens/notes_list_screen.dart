@@ -64,52 +64,49 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(
-      key: GlobalSnackBarUtil.scaffoldMessengerKey,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Notes'),
-          actions: [
-            _buildThemeSelectorButton(),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            context.push(RouteNames.notesCreate);
-          },
-          child: const Icon(Icons.add),
-        ),
-        drawer: _buildDrawer(),
-        body: BlocConsumer<NotesBloc, NotesState>(
-          listener: (context, state) {
-            // Hata durumunda snackbar göster
-            if (state is NotesErrorState) {
-              GlobalSnackBarUtil.showErrorSnackbar(state.message);
-            }
-          },
-          builder: (context, state) {
-            // Loading durumunda loading indicator göster
-            if (state is NotesLoadingState) {
-              return _buildLoadingState();
-            }
-            // Loaded durumunda liste göster
-            if (state is NotesLoadedState) {
-              return _buildLoadedState(context, state);
-            }
-            // Hata durumunda hata mesajı ve tekrar dene butonu göster
-            if (state is NotesErrorState) {
-              return _buildErrorState(state, context);
-            }
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notes'),
+        actions: [
+          _buildThemeSelectorButton(),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.push(RouteNames.notesCreate);
+        },
+        child: const Icon(Icons.add),
+      ),
+      drawer: _buildDrawer(),
+      body: BlocConsumer<NotesBloc, NotesState>(
+        listener: (context, state) {
+          // Hata durumunda snackbar göster
+          if (state is NotesErrorState) {
+            GlobalSnackBarUtil.showErrorSnackbar(state.message);
+          }
+        },
+        builder: (context, state) {
+          // Loading durumunda loading indicator göster
+          if (state is NotesLoadingState) {
+            return _buildLoadingState();
+          }
+          // Loaded durumunda liste göster
+          if (state is NotesLoadedState) {
+            return _buildLoadedState(context, state);
+          }
+          // Hata durumunda hata mesajı ve tekrar dene butonu göster
+          if (state is NotesErrorState) {
+            return _buildErrorState(state, context);
+          }
 
-            // Empty durumunda boş bırak
-            if (state is NotesEmptyState) {
-              return _buildEmptyState();
-            }
+          // Empty durumunda boş bırak
+          if (state is NotesEmptyState) {
+            return _buildEmptyState();
+          }
 
-            // Diğer durumlarda boş bırak
-            return const SizedBox.shrink();
-          },
-        ),
+          // Diğer durumlarda boş bırak
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
@@ -199,21 +196,28 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
     );
   }
 
-  BlocBuilder<LoggedUserCubit, LoggedUserState> _buildDrawer() {
-    return BlocBuilder<LoggedUserCubit, LoggedUserState>(
-      builder: (context, state) {
-        if (state is UserLoaded) {
-          return UserDrawerWidget(
-            onLogout: () {
-              context.read<AuthBloc>().add(LogoutEvent());
-            },
-            photoUrl: state.user.photoUrl,
-            displayName: state.user.displayName,
-            email: state.user.email,
-          );
+  Widget _buildDrawer() {
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthLoggedOut) {
+          context.go(RouteNames.splash);
         }
-        return const SizedBox.shrink();
       },
+      child: BlocBuilder<LoggedUserCubit, LoggedUserState>(
+        builder: (context, state) {
+          if (state is UserLoaded) {
+            return UserDrawerWidget(
+              onLogout: () {
+                context.read<AuthBloc>().add(LogoutEvent());
+              },
+              photoUrl: state.user.photoUrl,
+              displayName: state.user.displayName,
+              email: state.user.email,
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 }

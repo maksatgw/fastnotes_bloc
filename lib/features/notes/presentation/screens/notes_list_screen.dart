@@ -49,6 +49,8 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
   @override
   void dispose() {
     super.dispose();
+    // Scroll controller'ı dispose ediyoruz.
+    _scrollController.dispose();
     // RouteObserver'ı unsubscribe ediyoruz.
     AppRouter.routeObserver.unsubscribe(this);
   }
@@ -61,57 +63,53 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
   }
 
   @override
-  void didPush() {
-    super.didPush();
-    // Yeni sayfa açıldığında notları yükle.
-    context.read<NotesBloc>().add(GetNotesEvent());
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notes'),
-        actions: [
-          _buildThemeSelectorButton(),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.push(RouteNames.notesCreate);
-        },
-        child: const Icon(Icons.add),
-      ),
-      drawer: _buildDrawer(),
-      body: BlocConsumer<NotesBloc, NotesState>(
-        listener: (context, state) {
-          // Hata durumunda snackbar göster
-          if (state is NotesErrorState) {
-            SnackbarUtils.showErrorSnackbar(state.message);
-          }
-        },
-        builder: (context, state) {
-          // Loading durumunda loading indicator göster
-          if (state is NotesLoadingState) {
-            return _buildLoadingState();
-          }
-          // Loaded durumunda liste göster
-          if (state is NotesLoadedState) {
-            return _buildLoadedState(context, state);
-          }
-          // Hata durumunda hata mesajı ve tekrar dene butonu göster
-          if (state is NotesErrorState) {
-            return _buildErrorState(state, context);
-          }
+    return ScaffoldMessenger(
+      key: GlobalSnackBarUtil.scaffoldMessengerKey,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Notes'),
+          actions: [
+            _buildThemeSelectorButton(),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            context.push(RouteNames.notesCreate);
+          },
+          child: const Icon(Icons.add),
+        ),
+        drawer: _buildDrawer(),
+        body: BlocConsumer<NotesBloc, NotesState>(
+          listener: (context, state) {
+            // Hata durumunda snackbar göster
+            if (state is NotesErrorState) {
+              GlobalSnackBarUtil.showErrorSnackbar(state.message);
+            }
+          },
+          builder: (context, state) {
+            // Loading durumunda loading indicator göster
+            if (state is NotesLoadingState) {
+              return _buildLoadingState();
+            }
+            // Loaded durumunda liste göster
+            if (state is NotesLoadedState) {
+              return _buildLoadedState(context, state);
+            }
+            // Hata durumunda hata mesajı ve tekrar dene butonu göster
+            if (state is NotesErrorState) {
+              return _buildErrorState(state, context);
+            }
 
-          // Empty durumunda boş bırak
-          if (state is NotesEmptyState) {
-            return _buildEmptyState();
-          }
+            // Empty durumunda boş bırak
+            if (state is NotesEmptyState) {
+              return _buildEmptyState();
+            }
 
-          // Diğer durumlarda boş bırak
-          return const SizedBox.shrink();
-        },
+            // Diğer durumlarda boş bırak
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }

@@ -26,48 +26,57 @@ class _NotesCreateScreenState extends State<NotesCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Not Oluştur'),
-        actions: [
-          _addButton(context),
-        ],
-      ),
-      body: BlocListener<NotesBloc, NotesState>(
-        listener: (context, state) {
-          if (state is NotesErrorState) {
-            SnackbarUtils.showErrorSnackbar(state.message);
-            context.pop();
-          }
-          if (state is ValidationState) {
-            SnackbarUtils.showErrorSnackbar(state.message);
-          }
-          if (state is NotesCreatedState) {
-            SnackbarUtils.showSuccessSnackbar('Not başarıyla oluşturuldu');
-            context.pop();
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              NoteTextFieldWidget(
-                titleController: _titleController,
-                hintText: 'Not başlığını giriniz',
-                maxLines: 1,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
+    return ScaffoldMessenger(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Not Oluştur'),
+          actions: [
+            _addButton(context),
+          ],
+        ),
+        body: BlocListener<NotesBloc, NotesState>(
+          listener: (context, state) {
+            if (state is NotesErrorState) {
+              // NotesErrorState durumunda snackbar gösterilir.
+              GlobalSnackBarUtil.showErrorSnackbar(state.message);
+              context.pop();
+            }
+            if (state is ValidationState) {
+              // ValidationState durumunda snackbar gösterilir.
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackbarFactoryUtil.buildErrorSnackBar(state.message),
+              );
+            }
+            if (state is NotesCreatedState) {
+              // Diğer sayfalardan geri gelindiğinde snackbar gösterilir.
+              GlobalSnackBarUtil.showSuccessSnackbar(
+                'Not başarıyla oluşturuldu',
+              );
+              context.pop();
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                NoteTextFieldWidget(
+                  titleController: _titleController,
+                  hintText: 'Not başlığını giriniz',
+                  maxLines: 1,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: NoteTextFieldWidget(
-                  titleController: _contentController,
-                  hintText: 'Not İçeriği',
-                  maxLines: 20,
-                  style: Theme.of(context).textTheme.bodyMedium!,
+                Expanded(
+                  child: NoteTextFieldWidget(
+                    titleController: _contentController,
+                    hintText: 'Not İçeriği',
+                    maxLines: 20,
+                    style: Theme.of(context).textTheme.bodyMedium!,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

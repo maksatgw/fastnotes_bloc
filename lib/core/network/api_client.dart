@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fastnotes_bloc/core/constants/api_constants.dart';
 import 'package:fastnotes_bloc/core/errors/failures_handler.dart';
+import 'package:fastnotes_bloc/core/network/auth_interceptor.dart';
 import 'package:flutter/foundation.dart';
 
 // API Çağrıları için singleton kullanılacak generic yapı
@@ -10,9 +11,10 @@ import 'package:flutter/foundation.dart';
 // Dio kullanılıyor.
 class ApiClient {
   final Dio _dio;
+  final AuthInterceptor _authInterceptor;
 
   // Dio'nun baseOptions'u ApiConstants.baseUrl ile oluşturuluyor.
-  ApiClient()
+  ApiClient(this._authInterceptor)
     : _dio = Dio(
         BaseOptions(
           baseUrl: ApiConstants.apiUrl,
@@ -20,7 +22,9 @@ class ApiClient {
           receiveTimeout: const Duration(seconds: 10),
           sendTimeout: const Duration(seconds: 10),
         ),
-      );
+      ) {
+    _dio.interceptors.add(_authInterceptor);
+  }
 
   // Get fonksiyonu, path ve queryParameters ile API'ye istek gönderir.
   // Geriye, gerekli dönüşümleri kolaylaştırmak ve kullanılabilir hale getirmek için Map<String, dynamic> dönüyor.

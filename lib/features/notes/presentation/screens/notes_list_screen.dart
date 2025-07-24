@@ -2,8 +2,10 @@ import 'package:fastnotes_bloc/core/constants/asset_constants.dart';
 import 'package:fastnotes_bloc/core/router/app_router.dart';
 import 'package:fastnotes_bloc/core/router/route_names.dart';
 import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_cubit.dart';
+import 'package:fastnotes_bloc/core/utils/date_utils.dart';
 import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
 import 'package:fastnotes_bloc/core/widgets/change_theme_button_widget.dart';
+import 'package:fastnotes_bloc/features/notes/domain/entities/note_entity.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/widgets/note_tile_widget.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/widgets/user_drawer_widget.dart';
@@ -186,22 +188,16 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
     return BlocBuilder<LoggedUserCubit, LoggedUserState>(
       builder: (context, state) {
         if (state is UserLoaded) {
-          final user = state.user;
           return UserDrawerWidget(
             onLogout: () {
               context.read<AuthBloc>().add(LogoutEvent());
             },
-            photoUrl: user.photoUrl,
-            displayName: user.displayName,
-            email: user.email,
+            photoUrl: state.user.photoUrl,
+            displayName: state.user.displayName,
+            email: state.user.email,
           );
         }
-        // Error state veya diğer durumlar için sadece çıkış butonu göster
-        return UserDrawerWidget(
-          onLogout: () {
-            context.read<AuthBloc>().add(LogoutEvent());
-          },
-        );
+        return const SizedBox.shrink();
       },
     );
   }

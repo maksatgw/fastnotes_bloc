@@ -1,11 +1,10 @@
 import 'package:fastnotes_bloc/core/constants/asset_constants.dart';
 import 'package:fastnotes_bloc/core/router/app_router.dart';
+import 'package:fastnotes_bloc/core/theme/theme_cubit/theme_cubit.dart';
 import 'package:fastnotes_bloc/core/router/route_names.dart';
 import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_cubit.dart';
-import 'package:fastnotes_bloc/core/utils/date_utils.dart';
 import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
 import 'package:fastnotes_bloc/core/widgets/change_theme_button_widget.dart';
-import 'package:fastnotes_bloc/features/notes/domain/entities/note_entity.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/widgets/note_tile_widget.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/widgets/user_drawer_widget.dart';
@@ -73,7 +72,9 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
-        actions: [ChangeThemeButtonWidget()],
+        actions: [
+          _buildThemeSelectorButton(),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -112,6 +113,22 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
           return const SizedBox.shrink();
         },
       ),
+    );
+  }
+
+  BlocSelector<ThemeCubit, ThemeState, ThemeMode> _buildThemeSelectorButton() {
+    return BlocSelector<ThemeCubit, ThemeState, ThemeMode>(
+      selector: (state) {
+        return state.isDarkMode ? ThemeMode.dark : ThemeMode.light;
+      },
+      builder: (context, state) {
+        return ChangeThemeButtonWidget(
+          onPressed: () {
+            context.read<ThemeCubit>().toggleTheme();
+          },
+          themeMode: state,
+        );
+      },
     );
   }
 
@@ -175,9 +192,9 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
           ),
           // Sayfalama esnasında ekranın altında loading indicator göster.
           if (state.isLoadingMore)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: Center(child: CircularProgressIndicator()),
+              child: _buildLoadingState(),
             ),
         ],
       ),

@@ -15,7 +15,7 @@ class AuthScreen extends StatelessWidget {
         child: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthLoading) {
-              SnackbarUtils.showInfoSnackbar('Loading...');
+              GlobalSnackBarUtil.showInfoSnackbar('Loading...');
             }
             if (state is AuthSuccess) {
               context.go(RouteNames.notesList);
@@ -24,7 +24,7 @@ class AuthScreen extends StatelessWidget {
               context.go(RouteNames.auth);
             }
             if (state is AuthError) {
-              SnackbarUtils.showErrorSnackbar(
+              GlobalSnackBarUtil.showErrorSnackbar(
                 'Login failed, please try again',
               );
             }

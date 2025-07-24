@@ -2,7 +2,6 @@ import 'package:fastnotes_bloc/core/storage/storage_service.dart';
 import 'package:fastnotes_bloc/core/theme/app_theme.dart';
 import 'package:fastnotes_bloc/core/usecases/get_logged_user_use_case.dart';
 import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_cubit.dart';
-import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
 import 'package:fastnotes_bloc/features/auth/domain/usecases/auth_use_case.dart';
 import 'package:fastnotes_bloc/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/create_notes_usecase.dart';
@@ -75,8 +74,6 @@ class FastNotesApp extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             // ThemeCubit'ten themeMode'u alıyoruz.
             themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            // Snackbar'ları yönetmek için SnackbarUtils kullanılıyor.
-            scaffoldMessengerKey: SnackbarUtils.scaffoldMessengerKey,
           );
         },
       ),

@@ -6,4 +6,6 @@ class AssetConstants {
   static const String imagesPath = '${basePath}images/';
   static const String splashAnimation = '${lottiePath}splash_animation.json';
   static const String splashImage = '${imagesPath}splash_image.png';
+  static const String userAvatarPlaceholder =
+      '${imagesPath}placeholder_user.png';
 }

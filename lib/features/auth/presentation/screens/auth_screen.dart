@@ -12,12 +12,19 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: BlocListener<AuthBloc, AuthState>(
+        child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthLoading) {
-              GlobalSnackBarUtil.showInfoSnackbar('Loading...');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackbarFactoryUtil.buildInfoSnackBar(
+                  'Loading...',
+                ),
+              );
             }
             if (state is AuthSuccess) {
+              GlobalSnackBarUtil.showSuccessSnackbar(
+                'Login successful',
+              );
               context.go(RouteNames.notesList);
             }
             if (state is AuthLoggedOut) {
@@ -29,19 +36,16 @@ class AuthScreen extends StatelessWidget {
               );
             }
           },
-          child: BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              return state is AuthLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ElevatedButton(
-                      onPressed: () =>
-                          context.read<AuthBloc>().add(LoginEvent()),
-                      child: const Text('Login with Google'),
-                    );
-            },
-          ),
+          builder: (context, state) {
+            return state is AuthLoading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ElevatedButton(
+                    onPressed: () => context.read<AuthBloc>().add(LoginEvent()),
+                    child: const Text('Login with Google'),
+                  );
+          },
         ),
       ),
     );

@@ -5,6 +5,7 @@ import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_
 import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
 import 'package:fastnotes_bloc/features/auth/domain/usecases/auth_use_case.dart';
 import 'package:fastnotes_bloc/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:fastnotes_bloc/features/notes/data/models/freezed/note_freezed.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/create_notes_usecase.dart';
 import 'package:fastnotes_bloc/features/splash/domain/usecases/splash_use_case.dart';
 import 'package:fastnotes_bloc/features/splash/presentation/cubit/splash_cubit.dart';
@@ -23,6 +24,7 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await InjectionContainer.init();
   FlutterNativeSplash.remove();
+  TestFreezed().test();
   runApp(const FastNotesApp());
 }
 

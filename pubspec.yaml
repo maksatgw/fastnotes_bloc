@@ -11,8 +11,7 @@ dependencies:
     sdk: flutter
   # State Management
   flutter_bloc: ^9.1.1
-  equatable: ^2.0.7
-  # Newtork
+  # Network
   dio: ^5.8.0+1
   # Local Storage
   hive: ^2.2.3
@@ -25,11 +24,12 @@ dependencies:
   lottie: ^3.3.1
   # Utils
   intl: ^0.20.2
-  json_annotation: ^4.9.0
+  freezed_annotation: ^3.1.0
   # Splash Screen
   flutter_native_splash: ^2.4.6
   # External
   google_sign_in: ^6.3.0
+  equatable: ^2.0.7
   # Error Handling
   dartz: ^0.10.1
 
@@ -43,6 +43,8 @@ dev_dependencies:
   # Code Generation
   build_runner: ^2.6.0
   json_serializable: ^6.10.0
+  freezed: ^3.2.0
+
 
 flutter:
   uses-material-design: true

@@ -1,4 +1,4 @@
-import 'package:fastnotes_bloc/core/constants/asset_constants.dart';
+import 'package:fastnotes_bloc/core/config/constants/asset_constants.dart';
 import 'package:flutter/material.dart';
 
 class UserDrawerWidget extends StatelessWidget {

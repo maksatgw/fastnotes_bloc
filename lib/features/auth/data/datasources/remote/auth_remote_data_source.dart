@@ -1,4 +1,5 @@
-import 'package:fastnotes_bloc/core/constants/api_constants.dart';
+import 'package:fastnotes_bloc/core/config/dart_define_config.dart';
+import 'package:fastnotes_bloc/core/config/constants/api_constants.dart';
 import 'package:fastnotes_bloc/core/network/api_client.dart';
 import 'package:fastnotes_bloc/features/auth/data/models/auth_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -16,7 +17,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   AuthRemoteDataSourceImpl(this._apiClient)
     : _googleSignIn = GoogleSignIn(
-        serverClientId: ApiConstants.googleServerClientId,
+        serverClientId: DartDefineConfig.googleServerClientId,
         scopes: ['email', 'profile'],
       );
 

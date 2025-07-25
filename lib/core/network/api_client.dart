@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fastnotes_bloc/core/constants/api_constants.dart';
+import 'package:fastnotes_bloc/core/config/dart_define_config.dart';
 import 'package:fastnotes_bloc/core/errors/failures_handler.dart';
 import 'package:fastnotes_bloc/core/network/auth_interceptor.dart';
 import 'package:flutter/foundation.dart';
@@ -17,7 +17,7 @@ class ApiClient {
   ApiClient(this._authInterceptor)
     : _dio = Dio(
         BaseOptions(
-          baseUrl: ApiConstants.apiUrl,
+          baseUrl: DartDefineConfig.apiUrl,
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
           sendTimeout: const Duration(seconds: 10),

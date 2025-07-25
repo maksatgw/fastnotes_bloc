@@ -1,4 +1,4 @@
-import 'package:fastnotes_bloc/core/constants/api_constants.dart';
+import 'package:fastnotes_bloc/core/config/constants/api_constants.dart';
 import 'package:fastnotes_bloc/core/models/paginated_response_model.dart';
 import 'package:fastnotes_bloc/core/network/api_client.dart';
 import 'package:fastnotes_bloc/features/notes/data/models/note_model.dart';

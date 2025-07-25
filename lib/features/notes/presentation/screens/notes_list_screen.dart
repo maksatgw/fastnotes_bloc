@@ -1,4 +1,4 @@
-import 'package:fastnotes_bloc/core/constants/asset_constants.dart';
+import 'package:fastnotes_bloc/core/config/constants/asset_constants.dart';
 import 'package:fastnotes_bloc/core/router/app_router.dart';
 import 'package:fastnotes_bloc/core/theme/theme_cubit/theme_cubit.dart';
 import 'package:fastnotes_bloc/core/router/route_names.dart';
@@ -59,12 +59,6 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
   void didPopNext() {
     super.didPopNext();
     // Bir önceki sayfadan geri gelindiğinde notları yükle.
-    context.read<NotesBloc>().add(GetNotesEvent());
-  }
-
-  @override
-  void didPushNext() {
-    super.didPushNext();
     context.read<NotesBloc>().add(GetNotesEvent());
   }
 

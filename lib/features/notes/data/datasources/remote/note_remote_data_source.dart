@@ -48,7 +48,7 @@ class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
   Future<bool> createNote(NoteModel note) async {
     var response = await _apiClient.post(
       ApiConstants.notes,
-      data: note.toJsonForCreate(),
+      data: note.toJson(),
     );
     return response != null;
   }

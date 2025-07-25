@@ -1,21 +1,16 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'auth_model.freezed.dart';
 part 'auth_model.g.dart';
 
-@JsonSerializable()
-class AuthModel {
-  final String token;
-  final String refreshToken;
-  final String userId;
-
-  AuthModel({
-    required this.token,
-    required this.refreshToken,
-    required this.userId,
-  });
+@freezed
+abstract class AuthModel with _$AuthModel {
+  const factory AuthModel({
+    required final String token,
+    required final String refreshToken,
+    required final String userId,
+  }) = _AuthModel;
 
   factory AuthModel.fromJson(Map<String, dynamic> json) =>
       _$AuthModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AuthModelToJson(this);
 }

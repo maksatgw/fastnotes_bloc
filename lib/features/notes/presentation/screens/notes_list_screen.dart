@@ -63,6 +63,18 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
   }
 
   @override
+  void didPushNext() {
+    super.didPushNext();
+    context.read<NotesBloc>().add(GetNotesEvent());
+  }
+
+  @override
+  void didPush() {
+    super.didPush();
+    context.read<NotesBloc>().add(GetNotesEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

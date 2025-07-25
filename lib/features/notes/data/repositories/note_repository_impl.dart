@@ -24,9 +24,7 @@ class NoteRepositoryImpl implements NoteRepository {
     // Try catch ile hata yakalama
     try {
       var userId = await _noteLocalDataSource.getUserId();
-      if (userId == null) {
-        return Left(CacheFailure(message: 'User ID is null'));
-      }
+
       var response = await _noteRemoteDataSource.getNotes(page, userId);
 
       if (response == null) {
@@ -63,9 +61,7 @@ class NoteRepositoryImpl implements NoteRepository {
   Future<Either<Failure, bool>> createNote(NoteEntity note) async {
     try {
       var userId = await _noteLocalDataSource.getUserId();
-      if (userId == null) {
-        return Left(CacheFailure(message: 'User ID is null'));
-      }
+
       var response = await _noteRemoteDataSource.createNote(
         NoteModel(
           title: note.title,

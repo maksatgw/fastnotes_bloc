@@ -1,4 +1,4 @@
-import 'package:fastnotes_bloc/core/constants/asset_constants.dart';
+import 'package:fastnotes_bloc/core/config/constants/asset_constants.dart';
 import 'package:fastnotes_bloc/core/router/app_router.dart';
 import 'package:fastnotes_bloc/core/router/route_names.dart';
 import 'package:fastnotes_bloc/features/splash/presentation/cubit/splash_cubit.dart';

@@ -30,17 +30,3 @@ abstract class NoteDataModel with _$NoteDataModel {
   //   return json;
   // }
 }
-
-class TestFreezed {
-  var note = NoteDataModel(
-    title: 'Test',
-    content: 'Test',
-    userId: '1',
-    id: null,
-  );
-
-  void test() {
-    var json = note.toJson();
-    print(json);
-  }
-}

@@ -65,6 +65,30 @@ class ApiClient {
         'Post request failed',
         error: e,
       );
+      _appLogger.error('Post request failed', error: e);
+      throw handleServerFailure(e);
+    }
+  }
+
+  Future<Map<String, dynamic>?> delete(
+    String path, {
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      _appLogger.debug('Delete request sent to $path');
+      final response = await _dio.delete(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      if (response.statusCode == HttpStatus.ok) {
+        _appLogger.debug('Delete request successful');
+        return response.data as Map<String, dynamic>;
+      }
+      return null;
+    } on DioException catch (e) {
+      _appLogger.error('Delete request failed', error: e);
       throw handleServerFailure(e);
     }
   }

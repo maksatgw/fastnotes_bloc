@@ -8,4 +8,5 @@ import 'package:fastnotes_bloc/features/notes/domain/entities/paginated_notes_en
 abstract class NoteRepository {
   Future<Either<Failure, PaginatedNotesEntity>> getNotes(int page);
   Future<Either<Failure, bool>> createNote(NoteEntity note);
+  Future<Either<Failure, bool>> deleteNote(int id);
 }

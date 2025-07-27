@@ -7,6 +7,7 @@ import 'package:fastnotes_bloc/features/notes/data/models/note_model.dart';
 abstract class NoteRemoteDataSource {
   Future<PaginatedResponseModel<NoteModel>?> getNotes(int page, String userId);
   Future<bool> createNote(NoteModel note);
+  Future<bool> deleteNote(int id, String userId);
 }
 
 // Uzak veri kaynağı için implementasyon
@@ -49,6 +50,18 @@ class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
     var response = await _apiClient.post(
       ApiConstants.notes,
       data: note.toJson(),
+    );
+    return response != null;
+  }
+
+  @override
+  Future<bool> deleteNote(int id, String userId) async {
+    var response = await _apiClient.delete(
+      ApiConstants.notes,
+      data: {
+        'id': id,
+        'userId': userId,
+      },
     );
     return response != null;
   }

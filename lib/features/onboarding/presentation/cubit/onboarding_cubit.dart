@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:fastnotes_bloc/features/onboarding/domain/usecases/onboarding_use_case.dart';
+import 'package:fastnotes_bloc/features/onboarding/domain/usecases/onboarding_usecase.dart';
 
 part 'onboarding_state.dart';
 

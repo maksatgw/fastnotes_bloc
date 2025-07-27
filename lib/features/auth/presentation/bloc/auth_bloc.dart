@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:fastnotes_bloc/features/auth/domain/usecases/auth_use_case.dart';
+import 'package:fastnotes_bloc/features/auth/domain/usecases/auth_usecase.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

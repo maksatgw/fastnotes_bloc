@@ -78,4 +78,19 @@ class NoteRepositoryImpl implements NoteRepository {
       return Left(UnexpectedFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> deleteNote(int id) async {
+    try {
+      var userId = await _noteLocalDataSource.getUserId();
+      var response = await _noteRemoteDataSource.deleteNote(id, userId);
+      return Right(response);
+    } on ServerFailure catch (e) {
+      return Left(e);
+    } on CacheFailure catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(UnexpectedFailure(message: e.toString()));
+    }
+  }
 }

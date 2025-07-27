@@ -7,21 +7,22 @@ import 'package:fastnotes_bloc/features/auth/data/datasources/local/auth_local_d
 import 'package:fastnotes_bloc/features/auth/data/datasources/remote/auth_remote_data_source.dart';
 import 'package:fastnotes_bloc/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:fastnotes_bloc/features/auth/domain/repositories/auth_repository.dart';
-import 'package:fastnotes_bloc/features/auth/domain/usecases/auth_use_case.dart';
+import 'package:fastnotes_bloc/features/auth/domain/usecases/auth_usecase.dart';
 import 'package:fastnotes_bloc/features/notes/data/datasources/local/note_local_data_source.dart';
 import 'package:fastnotes_bloc/features/notes/data/datasources/remote/note_remote_data_source.dart';
 import 'package:fastnotes_bloc/features/notes/data/repositories/note_repository_impl.dart';
 import 'package:fastnotes_bloc/features/notes/domain/repositories/note_repository.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/create_notes_usecase.dart';
+import 'package:fastnotes_bloc/features/notes/domain/usecases/delete_notes_usecase.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/get_notes_usecase.dart';
 import 'package:fastnotes_bloc/features/onboarding/data/datasources/local/onboarding_local_data_source.dart';
 import 'package:fastnotes_bloc/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:fastnotes_bloc/features/onboarding/domain/repositories/onboarding_repository.dart';
-import 'package:fastnotes_bloc/features/onboarding/domain/usecases/onboarding_use_case.dart';
+import 'package:fastnotes_bloc/features/onboarding/domain/usecases/onboarding_usecase.dart';
 import 'package:fastnotes_bloc/features/splash/data/datasources/local/splash_local_data_source.dart';
 import 'package:fastnotes_bloc/features/splash/data/repositories/splash_repository_impl.dart';
 import 'package:fastnotes_bloc/features/splash/domain/repositories/splash_repository.dart';
-import 'package:fastnotes_bloc/features/splash/domain/usecases/splash_use_case.dart';
+import 'package:fastnotes_bloc/features/splash/domain/usecases/splash_usecase.dart';
 import 'package:get_it/get_it.dart';
 
 // Dependency Injection
@@ -140,6 +141,9 @@ class InjectionContainer {
     );
     getIt.registerFactory<CreateNotesUsecase>(
       () => CreateNotesUsecase(getIt<NoteRepository>()),
+    );
+    getIt.registerFactory<DeleteNotesUsecase>(
+      () => DeleteNotesUsecase(getIt<NoteRepository>()),
     );
   }
 }

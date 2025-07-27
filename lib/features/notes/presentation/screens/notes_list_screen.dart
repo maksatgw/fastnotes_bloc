@@ -90,6 +90,10 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
           if (state is NotesErrorState) {
             GlobalSnackBarUtil.showErrorSnackbar(state.message);
           }
+          if (state is NotesDeletedState) {
+            GlobalSnackBarUtil.showSuccessSnackbar('Not başarıyla silindi');
+            context.read<NotesBloc>().add(GetNotesEvent());
+          }
         },
         builder: (context, state) {
           // Loading durumunda loading indicator göster
@@ -187,7 +191,14 @@ class _NotesListScreenState extends State<NotesListScreen> with RouteAware {
               itemBuilder: (context, index) {
                 final note = state.notes?[index];
                 // Son item ise ve hasNext true ise loading indicator göster
-                return NoteTileWidget(note: note);
+                return NoteTileWidget(
+                  note: note,
+                  onDelete: (context) {
+                    context.read<NotesBloc>().add(
+                      DeleteNoteEvent(id: note!.id!),
+                    );
+                  },
+                );
               },
             ),
           ),

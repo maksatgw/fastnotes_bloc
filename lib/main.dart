@@ -3,12 +3,13 @@ import 'package:fastnotes_bloc/core/theme/app_theme.dart';
 import 'package:fastnotes_bloc/core/usecases/get_logged_user_use_case.dart';
 import 'package:fastnotes_bloc/core/usecases/logged_user_cubit.dart/logged_user_cubit.dart';
 import 'package:fastnotes_bloc/core/utils/snackbar_utils.dart';
-import 'package:fastnotes_bloc/features/auth/domain/usecases/auth_use_case.dart';
+import 'package:fastnotes_bloc/features/auth/domain/usecases/auth_usecase.dart';
 import 'package:fastnotes_bloc/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/create_notes_usecase.dart';
-import 'package:fastnotes_bloc/features/onboarding/domain/usecases/onboarding_use_case.dart';
+import 'package:fastnotes_bloc/features/notes/domain/usecases/delete_notes_usecase.dart';
+import 'package:fastnotes_bloc/features/onboarding/domain/usecases/onboarding_usecase.dart';
 import 'package:fastnotes_bloc/features/onboarding/presentation/cubit/onboarding_cubit.dart';
-import 'package:fastnotes_bloc/features/splash/domain/usecases/splash_use_case.dart';
+import 'package:fastnotes_bloc/features/splash/domain/usecases/splash_usecase.dart';
 import 'package:fastnotes_bloc/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,6 +63,7 @@ class FastNotesApp extends StatelessWidget {
           create: (context) => NotesBloc(
             InjectionContainer.getIt<GetNotesUsecase>(),
             InjectionContainer.getIt<CreateNotesUsecase>(),
+            InjectionContainer.getIt<DeleteNotesUsecase>(),
           ),
         ),
         // AuthBloc, auth işlemlerini yönetir.

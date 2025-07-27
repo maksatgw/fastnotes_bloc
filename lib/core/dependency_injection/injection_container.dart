@@ -1,3 +1,4 @@
+import 'package:fastnotes_bloc/core/logging/app_logger.dart';
 import 'package:fastnotes_bloc/core/network/api_client.dart';
 import 'package:fastnotes_bloc/core/network/auth_interceptor.dart';
 import 'package:fastnotes_bloc/core/storage/storage_service.dart';
@@ -27,30 +28,41 @@ class InjectionContainer {
   // InjectionContainer'ın init fonksiyonu.
   // Bu fonksiyon, uygulama başladığında çağrılır.
   static Future<void> init() async {
+    // Core - Logging
+    getIt.registerSingleton<AppLogger>(AppLogger());
+
     // Core - Storage
     await initStorage();
 
     // Core - Network
     getIt.registerSingleton<AuthInterceptor>(
-      AuthInterceptor(getIt<StorageService>()),
+      AuthInterceptor(getIt<StorageService>(), getIt<AppLogger>()),
     );
     getIt.registerSingleton<ApiClient>(
-      ApiClient(getIt<AuthInterceptor>()),
+      ApiClient(getIt<AuthInterceptor>(), getIt<AppLogger>()),
     );
 
+    // Features - Auth
     await initAuth();
+    // Features - Notes
     await initNotes();
+    // Features - Splash
     await initSplash();
+    // Core - UseCases - GetLoggedUserUseCase
     getIt.registerSingleton<GetLoggedUserUseCase>(
-      GetLoggedUserUseCase(getIt<StorageService>()),
+      GetLoggedUserUseCase(getIt<StorageService>(), getIt<AppLogger>()),
     );
   }
 
+  // Init Storage
   static Future<void> initStorage() async {
-    getIt.registerSingleton<StorageService>(StorageServiceImpl());
+    getIt.registerSingleton<StorageService>(
+      StorageServiceImpl(getIt<AppLogger>()),
+    );
     await getIt<StorageService>().init();
   }
 
+  // Init Splash
   static Future<void> initSplash() async {
     getIt.registerSingleton<SplashLocalDataSource>(
       SplashLocalDataSourceImpl(getIt<StorageService>()),
@@ -62,7 +74,9 @@ class InjectionContainer {
       () => SplashUseCase(getIt<SplashRepository>()),
     );
   }
+  // Kod okunabilirliği için feature ayrı fonksiyonlar kullanılıyor.
 
+  // Init Auth
   static Future<void> initAuth() async {
     getIt.registerSingleton<AuthRemoteDataSource>(
       AuthRemoteDataSourceImpl(getIt<ApiClient>()),
@@ -83,7 +97,6 @@ class InjectionContainer {
     );
   }
 
-  // Kod okunabilirliği için feature ayrı fonksiyonlar kullanılıyor.
   // Features - Notes
   static Future<void> initNotes() async {
     // Remote Data Source

@@ -1,4 +1,5 @@
 import 'package:fastnotes_bloc/core/errors/failures.dart';
+import 'package:fastnotes_bloc/core/logging/app_logger.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveBoxes {
@@ -21,16 +22,23 @@ abstract class StorageService {
 class StorageServiceImpl implements StorageService {
   // Hive Box oluşturuyoruz.
   Box? _appBox;
-
+  final AppLogger _appLogger;
+  StorageServiceImpl(this._appLogger);
   // Ana fonksiyonlar
   @override
   Future<void> init() async {
     try {
+      _appLogger.debug('Initializing Hive');
       // Hive'ı başlatıyoruz.
       await Hive.initFlutter();
       // Hive Box'ı açıyoruz.
       _appBox = await Hive.openBox(HiveBoxes.app);
     } catch (e) {
+      _appLogger.error(
+        'Error in init',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       throw CacheFailure(message: e.toString());
     }
   }
@@ -39,8 +47,14 @@ class StorageServiceImpl implements StorageService {
   @override
   Future<bool> getBool(String key) async {
     try {
+      _appLogger.debug('Getting $key from storage');
       return await _appBox?.get(key) ?? false;
     } catch (e) {
+      _appLogger.error(
+        'Error in getBool',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       throw CacheFailure(message: e.toString());
     }
   }
@@ -48,8 +62,14 @@ class StorageServiceImpl implements StorageService {
   @override
   bool getBoolSync(String key) {
     try {
+      _appLogger.debug('Getting $key from storage');
       return _appBox?.get(key) ?? false;
     } catch (e) {
+      _appLogger.error(
+        'Error in getBoolSync',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       throw CacheFailure(message: e.toString());
     }
   }
@@ -57,8 +77,14 @@ class StorageServiceImpl implements StorageService {
   @override
   Future<void> setBool(String key, bool value) async {
     try {
+      _appLogger.debug('Setting $key');
       await _appBox?.put(key, value);
     } catch (e) {
+      _appLogger.error(
+        'Error in setBool',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       throw CacheFailure(message: e.toString());
     }
   }
@@ -67,8 +93,14 @@ class StorageServiceImpl implements StorageService {
   @override
   Future<void> clearAll() async {
     try {
+      _appLogger.debug('Clearing all storage');
       await _appBox?.clear();
     } catch (e) {
+      _appLogger.error(
+        'Error in clearAll',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       throw CacheFailure(message: e.toString());
     }
   }
@@ -76,8 +108,14 @@ class StorageServiceImpl implements StorageService {
   @override
   Future<String?> getString(String key) async {
     try {
+      _appLogger.debug('Getting $key from storage');
       return await _appBox?.get(key);
     } catch (e) {
+      _appLogger.error(
+        'Error in getString',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       throw CacheFailure(message: e.toString());
     }
   }
@@ -85,8 +123,14 @@ class StorageServiceImpl implements StorageService {
   @override
   String? getStringSync(String key) {
     try {
+      _appLogger.debug('Getting $key from storage');
       return _appBox?.get(key);
     } catch (e) {
+      _appLogger.error(
+        'Error in getStringSync',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       throw CacheFailure(message: e.toString());
     }
   }
@@ -94,8 +138,14 @@ class StorageServiceImpl implements StorageService {
   @override
   Future<void> setString(String key, String value) async {
     try {
+      _appLogger.debug('Setting to $value');
       await _appBox?.put(key, value);
     } catch (e) {
+      _appLogger.error(
+        'Error in setString',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       throw CacheFailure(message: e.toString());
     }
   }

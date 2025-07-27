@@ -11,6 +11,7 @@ import 'package:fastnotes_bloc/features/splash/presentation/cubit/splash_cubit.d
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fastnotes_bloc/core/dependency_injection/injection_container.dart';
+import 'package:fastnotes_bloc/core/logging/app_logger.dart';
 import 'package:fastnotes_bloc/core/theme/theme_cubit/theme_cubit.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/get_notes_usecase.dart';
@@ -23,6 +24,7 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await InjectionContainer.init();
   FlutterNativeSplash.remove();
+  InjectionContainer.getIt<AppLogger>().info('App started');
   runApp(const FastNotesApp());
 }
 
@@ -38,8 +40,10 @@ class FastNotesApp extends StatelessWidget {
       providers: [
         // ThemeCubit, uygulama temasını yönetir.
         BlocProvider(
-          create: (context) =>
-              ThemeCubit(InjectionContainer.getIt<StorageService>()),
+          create: (context) => ThemeCubit(
+            InjectionContainer.getIt<StorageService>(),
+            InjectionContainer.getIt<AppLogger>(),
+          ),
         ),
         // SplashCubit, splash ekranını yönetir.
         BlocProvider(

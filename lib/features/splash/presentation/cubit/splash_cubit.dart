@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:fastnotes_bloc/features/splash/domain/usecases/splash_use_case.dart';
+import 'package:fastnotes_bloc/features/splash/domain/usecases/splash_usecase.dart';
 
 part 'splash_state.dart';
 

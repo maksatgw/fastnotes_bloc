@@ -16,6 +16,7 @@ abstract class StorageService {
   Future<String?> getString(String key);
   String? getStringSync(String key);
   Future<void> clearAll();
+  Future<void> remove(String key);
 }
 
 // Storage Servis için implementasyon
@@ -143,6 +144,21 @@ class StorageServiceImpl implements StorageService {
     } catch (e) {
       _appLogger.error(
         'Error in setString',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+      throw CacheFailure(message: e.toString());
+    }
+  }
+
+  @override
+  Future<void> remove(String key) async {
+    try {
+      _appLogger.debug('Removing $key from storage');
+      await _appBox?.delete(key);
+    } catch (e) {
+      _appLogger.error(
+        'Error in remove',
         error: e,
         stackTrace: StackTrace.current,
       );

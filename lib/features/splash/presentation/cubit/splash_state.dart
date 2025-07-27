@@ -8,6 +8,10 @@ final class SplashAuthenticated extends SplashState {}
 
 final class SplashUnauthenticated extends SplashState {}
 
+final class SplashOnboardingFinished extends SplashState {}
+
+final class SplashOnboardingNotFinished extends SplashState {}
+
 final class SplashError extends SplashState {
   final String message;
 

@@ -1,4 +1,5 @@
 import 'package:fastnotes_bloc/core/storage/storage_service.dart';
+import 'package:fastnotes_bloc/core/utils/user_storage_utils.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> saveUserInfo(
@@ -36,6 +37,6 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> clearUserInfo() async {
-    await _storageService.clearAll();
+    clearUserData(_storageService);
   }
 }

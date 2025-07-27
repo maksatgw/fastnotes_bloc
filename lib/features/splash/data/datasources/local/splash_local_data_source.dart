@@ -2,6 +2,7 @@ import 'package:fastnotes_bloc/core/storage/storage_service.dart';
 
 abstract class SplashLocalDataSource {
   Future<bool> checkAuth();
+  Future<bool> checkOnboarding();
 }
 
 class SplashLocalDataSourceImpl implements SplashLocalDataSource {
@@ -16,5 +17,10 @@ class SplashLocalDataSourceImpl implements SplashLocalDataSource {
       return false;
     }
     return true;
+  }
+
+  @override
+  Future<bool> checkOnboarding() async {
+    return await _storageService.getBool("isOnboardingFinished");
   }
 }

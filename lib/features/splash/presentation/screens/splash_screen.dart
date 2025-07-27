@@ -44,6 +44,9 @@ class _SplashScreenState extends State<SplashScreen> with RouteAware {
   Widget build(BuildContext context) {
     return BlocListener<SplashCubit, SplashState>(
       listener: (context, state) {
+        if (state is SplashOnboardingNotFinished) {
+          context.go(RouteNames.onboarding);
+        }
         if (state is SplashAuthenticated) {
           context.go(RouteNames.notesList);
         }

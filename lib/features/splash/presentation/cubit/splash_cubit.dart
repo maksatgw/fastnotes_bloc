@@ -11,7 +11,10 @@ class SplashCubit extends Cubit<SplashState> {
 
   Future<void> startSplash() async {
     await Future.delayed(const Duration(seconds: 2));
-    await checkAuth();
+    await checkOnboarding();
+    if (state is SplashOnboardingFinished) {
+      await checkAuth();
+    }
   }
 
   Future<void> checkAuth() async {
@@ -20,6 +23,16 @@ class SplashCubit extends Cubit<SplashState> {
       (failure) => emit(SplashError(message: failure.message)),
       (success) =>
           emit(success ? SplashAuthenticated() : SplashUnauthenticated()),
+    );
+  }
+
+  Future<void> checkOnboarding() async {
+    final result = await _splashUseCase.checkOnboarding();
+    result.fold(
+      (failure) => emit(SplashError(message: failure.message)),
+      (success) => emit(
+        success ? SplashOnboardingFinished() : SplashOnboardingNotFinished(),
+      ),
     );
   }
 }

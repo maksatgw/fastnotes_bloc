@@ -2,6 +2,7 @@ import 'package:fastnotes_bloc/core/router/route_names.dart';
 import 'package:fastnotes_bloc/features/auth/presentation/screens/auth_screen.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/screens/notes_create_screen.dart';
 import 'package:fastnotes_bloc/features/notes/presentation/screens/notes_list_screen.dart';
+import 'package:fastnotes_bloc/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:fastnotes_bloc/features/splash/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +28,11 @@ class AppRouter {
       GoRoute(
         path: RouteNames.splash,
         builder: (context, state) => SplashScreen(),
+      ),
+      // Onboarding
+      GoRoute(
+        path: RouteNames.onboarding,
+        builder: (context, state) => OnboardingScreen(),
       ),
       // Notes
       GoRoute(

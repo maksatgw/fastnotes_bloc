@@ -5,6 +5,9 @@ class RouteNames {
   // Splash
   static const String splash = '/splash';
 
+  // Onboarding
+  static const String onboarding = '/onboarding';
+
   // Notes
   static const String notesList = '/notes';
   static const String notesCreate = '/notes/create';

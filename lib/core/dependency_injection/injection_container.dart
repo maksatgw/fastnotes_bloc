@@ -14,6 +14,10 @@ import 'package:fastnotes_bloc/features/notes/data/repositories/note_repository_
 import 'package:fastnotes_bloc/features/notes/domain/repositories/note_repository.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/create_notes_usecase.dart';
 import 'package:fastnotes_bloc/features/notes/domain/usecases/get_notes_usecase.dart';
+import 'package:fastnotes_bloc/features/onboarding/data/datasources/local/onboarding_local_data_source.dart';
+import 'package:fastnotes_bloc/features/onboarding/data/repositories/onboarding_repository_impl.dart';
+import 'package:fastnotes_bloc/features/onboarding/domain/repositories/onboarding_repository.dart';
+import 'package:fastnotes_bloc/features/onboarding/domain/usecases/onboarding_use_case.dart';
 import 'package:fastnotes_bloc/features/splash/data/datasources/local/splash_local_data_source.dart';
 import 'package:fastnotes_bloc/features/splash/data/repositories/splash_repository_impl.dart';
 import 'package:fastnotes_bloc/features/splash/domain/repositories/splash_repository.dart';
@@ -42,12 +46,14 @@ class InjectionContainer {
       ApiClient(getIt<AuthInterceptor>(), getIt<AppLogger>()),
     );
 
+    // Features - Onboarding
+    await initOnboarding();
     // Features - Auth
     await initAuth();
-    // Features - Notes
-    await initNotes();
     // Features - Splash
     await initSplash();
+    // Features - Notes
+    await initNotes();
     // Core - UseCases - GetLoggedUserUseCase
     getIt.registerSingleton<GetLoggedUserUseCase>(
       GetLoggedUserUseCase(getIt<StorageService>(), getIt<AppLogger>()),
@@ -61,6 +67,7 @@ class InjectionContainer {
     );
     await getIt<StorageService>().init();
   }
+  // Kod okunabilirliği için feature ayrı fonksiyonlar kullanılıyor.
 
   // Init Splash
   static Future<void> initSplash() async {
@@ -74,7 +81,18 @@ class InjectionContainer {
       () => SplashUseCase(getIt<SplashRepository>()),
     );
   }
-  // Kod okunabilirliği için feature ayrı fonksiyonlar kullanılıyor.
+
+  static Future<void> initOnboarding() async {
+    getIt.registerSingleton<OnboardingLocalDataSource>(
+      OnboardingLocalDataSourceImpl(getIt<StorageService>()),
+    );
+    getIt.registerSingleton<OnboardingRepository>(
+      OnboardingRepositoryImpl(getIt<OnboardingLocalDataSource>()),
+    );
+    getIt.registerFactory<OnboardingUseCase>(
+      () => OnboardingUseCase(getIt<OnboardingRepository>()),
+    );
+  }
 
   // Init Auth
   static Future<void> initAuth() async {

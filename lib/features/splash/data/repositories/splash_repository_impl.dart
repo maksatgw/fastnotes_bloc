@@ -19,4 +19,16 @@ class SplashRepositoryImpl implements SplashRepository {
       return Left(UnexpectedFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> checkOnboarding() async {
+    try {
+      final result = await _splashLocalDataSource.checkOnboarding();
+      return Right(result);
+    } on CacheFailure catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(UnexpectedFailure(message: e.toString()));
+    }
+  }
 }

@@ -10,4 +10,8 @@ class SplashUseCase {
   Future<Either<Failure, bool>> checkAuth() async {
     return await _splashRepository.checkAuth();
   }
+
+  Future<Either<Failure, bool>> checkOnboarding() async {
+    return await _splashRepository.checkOnboarding();
+  }
 }
